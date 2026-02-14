@@ -2,50 +2,48 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useAppStore, useAppSelector } from '@/app/redux/hooks'
+import { useAppSelector } from '@/app/redux/hooks'
+import Loader from '../Loader/Loader'
 import s from './ListCategories.module.scss'
-import { fetchCategoryByMainSlugThunk } from '@/app/redux/features/categories/thunks'
-import { useEffect, useRef } from 'react'
-import { useAppDispatch } from '@/app/redux/hooks'
+import Header from '../Header/Header'
 
 const ListCategories = ({ mainSlug }) => {
-  const store = useAppStore()
-  const initialized = useRef(false)
-  if (!initialized.current) {
-    store.dispatch(fetchCategoryByMainSlugThunk(mainSlug))
-    initialized.current = true
-  }
-  // const dispatch = useAppDispatch()
-  // useEffect(() => {
-  //   dispatch(fetchCategoryByMainSlugThunk(mainSlug))
-  // }, [dispatch, mainSlug])
+  const { items, isLoading } = useAppSelector(state => state.categoryByMainSlug)
 
-  const categories = useAppSelector(state => state.categoryByMainSlug.items)
+  const productsByCat = useAppSelector(state => state.productsByCat.items)
+  console.log('productsByCat', productsByCat)
+
+  // if (isLoading) {
+  //   return <Loader />
+  // }
 
   return (
-    <div className={s.category}>
-      <ul className={s.list_category}>
-        <li className={s.category_item}>
-          <Link className={s.link} rel="preload" href={`/${mainSlug}/all`}>
-            <p className={`${s.title} ${s.all_title}`}>ALL</p>
-          </Link>
-        </li>
-        {categories ? (
-          categories.map(category => (
-            <li className={s.category_item} key={category.id}>
-              <Link className={s.link} rel="preload" href={category.slug}>
-                <div className={s.image_block}>
-                  <Image className={s.image} src={category.image} alt="category" width={50} height={70} priority />
-                </div>
-                <p className={s.title}>{category.title.toUpperCase()}</p>
-              </Link>
-            </li>
-          ))
-        ) : (
-          <div>Категорії не знайдено</div>
-        )}
-      </ul>
-    </div>
+    <>
+      <Header />
+      <div className={s.category}>
+        <ul className={s.list_category}>
+          <li className={s.category_item}>
+            <Link className={s.link} rel="preload" href={`/${mainSlug}/all`}>
+              <p className={`${s.title} ${s.all_title}`}>ALL</p>
+            </Link>
+          </li>
+          {items ? (
+            items.map(category => (
+              <li className={s.category_item} key={category.id}>
+                <Link className={s.link} rel="preload" href={category.slug}>
+                  <div className={s.image_block}>
+                    <Image className={s.image} src={category.image} alt="category" width={50} height={70} priority />
+                  </div>
+                  <p className={s.title}>{category.title.toUpperCase()}</p>
+                </Link>
+              </li>
+            ))
+          ) : (
+            <div>Категорії не знайдено</div>
+          )}
+        </ul>
+      </div>
+    </>
   )
 }
 

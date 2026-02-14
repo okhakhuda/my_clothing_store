@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { mainCategoryReducer } from './features/mainCategories/slices'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+// import storage from 'redux-persist/lib/storage'
+import storage from './storage.js'
 import authReducer from './features/auth/slices'
 import { cartReducer } from './features/cart/slices'
 import {
@@ -16,7 +17,7 @@ import { orderAllReducer, orderByUserReducer } from './features/order/slices'
 const authPersistConfig = {
   key: 'authToken',
   storage,
-  whiteList: ['token'],
+  whitelist: ['token'],
   blacklist: ['error'],
 }
 
@@ -25,11 +26,11 @@ const authPersistReducer = persistReducer(authPersistConfig, authReducer)
 const cartPersistConfig = {
   key: 'cart',
   storage,
-  whiteList: ['price', 'color', 'size', 'image', 'name', 'article', 'productId'],
+  whitelist: ['items'],
 }
 const cartPersistReducer = persistReducer(cartPersistConfig, cartReducer)
 
-export const makeStore = () => {
+export const makeStore = preloadedState => {
   return configureStore({
     reducer: {
       auth: authPersistReducer,
@@ -45,6 +46,8 @@ export const makeStore = () => {
       allOrder: orderAllReducer,
       orderByUser: orderByUserReducer,
     },
+    preloadedState,
+    devTools: process.env.NODE_ENV !== 'production',
 
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
@@ -53,6 +56,11 @@ export const makeStore = () => {
         },
       }),
   })
+  // const persistor = persistStore(store)
+  // return { persistor }
 }
 
-export const persistor = persistStore(makeStore())
+// const store = makeStore().store
+// export { store }
+
+// export const persistor = persistStore(makeStore())

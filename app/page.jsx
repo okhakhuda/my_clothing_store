@@ -1,37 +1,25 @@
-'use client'
-
 import s from './page.module.scss'
-import Hero from './components/Hero/Hero'
-import { useAppDispatch, useAppSelector } from './redux/hooks'
-import MainCategories from './components/MainCategories/MainCategories'
-import NewProducts from './components/NewProducts/NewProducts'
-import { useEffect } from 'react'
-import { currentThunk } from './redux/features/auth/thunks'
-import { useStore } from 'react-redux'
+import { makeStore } from './redux/store'
+import { fetchMainCategoryThunk } from './redux/features/mainCategories/thunks'
+import { fetchNewProductsThunk } from './redux/features/products/thunks'
+import StoreProvider from './StoreProvider'
+import HomePageContent from './components/HomePageContent/HomePageContent'
+import Header from './components/Header/Header'
 
-export const dynamic = 'force-dynamic'
+const Home = async () => {
+  const store = makeStore()
 
-const Home = () => {
-  const store = useStore()
-  const dispatch = useAppDispatch()
+  await store.dispatch(fetchMainCategoryThunk())
+  await store.dispatch(fetchNewProductsThunk())
 
-  useEffect(() => {
-    // Це виконається тільки на клієнті після гіддрації
-    const state = store.getState()
-    const token = state.auth.token
-
-    if (token) {
-      dispatch(currentThunk(token))
-    }
-  }, [dispatch, store])
+  const state = store.getState()
 
   return (
     <>
-      <main className={s.main}>
-        <Hero />
-        <MainCategories />
-        <NewProducts />
-      </main>
+      <StoreProvider preloadedState={state}>
+        <Header />
+        <HomePageContent />
+      </StoreProvider>
     </>
   )
 }

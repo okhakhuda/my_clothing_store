@@ -3,32 +3,22 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import s from './MainCategories.module.scss'
-import { useAppSelector, useAppStore } from '../../redux/hooks'
-import { useState, useEffect } from 'react'
+import { useAppSelector } from '../../redux/hooks'
 import Loader from '../Loader/Loader'
-// import { fetchMainCategoryThunk } from '@/app/redux/features/mainCategories/thunks'
-// import { useRef } from 'react'
 
 const MainCategories = () => {
-  // const store = useAppStore()
-  // const initialized = useRef(false)
-  // if (!initialized.current) {
-  //   store.dispatch(fetchMainCategoryThunk())
-  //   initialized.current = true
-  // }
-
-  const mainCategories = useAppSelector(state => state.mainCategory.items)
-  const isLoading = useAppSelector(state => state.mainCategory.isLoading)
+  const { items, isLoading } = useAppSelector(state => state.mainCategory)
+  // const isLoading = useAppSelector(state => state.mainCategory.isLoading)
 
   // Expected server HTML to contain a matching <div> in <div>. Error Component Stack
 
-  const [mounted, setMounted] = useState(false)
+  // const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // useEffect(() => {
+  //   setMounted(true)
+  // }, [])
 
-  if (!mounted) return null
+  // if (!mounted) return null
 
   return (
     <div>
@@ -37,8 +27,8 @@ const MainCategories = () => {
         <Loader />
       ) : (
         <ul className={s.category_list}>
-          {mainCategories ? (
-            mainCategories.map(category => (
+          {items ? (
+            items.map(category => (
               <li className={s.category_item} key={category.id}>
                 <Link rel="preload" className={s.category_link} href={`${String(category.slug)}/all`}>
                   <Image

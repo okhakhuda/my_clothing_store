@@ -3,24 +3,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import s from './ListProducts.module.scss'
-import { useAppStore, useAppSelector } from '@/app/redux/hooks'
-import { fetchProductsByCatThunk, fetchProductsByMainCatThunk } from '../../redux/features/products/thunks'
-import { useRef } from 'react'
+import { useAppSelector } from '@/app/redux/hooks'
 
-const ListProducts = ({ categorySlug, mainSlug }) => {
-  const store = useAppStore()
-  const initialized = useRef(false)
-  if (!initialized.current) {
-    if (categorySlug) {
-      store.dispatch(fetchProductsByCatThunk(categorySlug))
-    } else {
-      store.dispatch(fetchProductsByMainCatThunk(mainSlug))
-    }
-    initialized.current = true
-  }
-
+const ListProducts = () => {
   const productsByCat = useAppSelector(state => state.productsByCat.items)
   const productsByMainCat = useAppSelector(state => state.productsByMainCat.items)
+
+  console.log('productsByCat:', productsByCat)
+  console.log('productsByMainCat:', productsByMainCat)
 
   let products = []
   if (productsByCat.length === 0) {

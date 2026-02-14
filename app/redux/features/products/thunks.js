@@ -42,9 +42,10 @@ export const fetchProductsByMainCatThunk = createAsyncThunk(
 
 export const fetchProductsByCatThunk = createAsyncThunk(
   'products/fetchProductsByCat',
-  async (categorySlug, { rejectWithValue }) => {
+  async ({ mainSlug, categorySlug }, { rejectWithValue }) => {
     try {
-      const { data } = await axios(`/api/products/category/${categorySlug}`)
+      const { data } = await axios(`/api/products/category/${mainSlug}/${categorySlug}`)
+      // console.log('data', data)
 
       return data.data.products
     } catch (error) {

@@ -5,7 +5,7 @@ import s from './Header.module.scss'
 import Logo from '../Logo/Logo'
 import Sidebar from '../Sidebar/Sidebar'
 import Search from '../Search/Search'
-import Basket from '../Cart/Cart'
+import CartBtn from '../CartBtn/CartBtn'
 import Link from 'next/link'
 import { SlHeart } from 'react-icons/sl'
 import { useAppSelector } from '@/app/redux/hooks'
@@ -14,6 +14,7 @@ import { useState } from 'react'
 
 const Header = () => {
   const [letter, setLetter] = useState('')
+
   // console.log('letter', letter)
 
   const avatar = useAppSelector(state => state.auth.user?.avatarUrl)
@@ -50,7 +51,7 @@ const Header = () => {
             <div className={s.counter}>0</div>
           </Link>
         </div>
-        <Basket />
+        <CartBtn />
       </div>
     </header>
   )

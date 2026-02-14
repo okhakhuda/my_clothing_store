@@ -3,20 +3,20 @@
 import s from './NewProducts.module.scss'
 import Slider from '../Slider/Slider'
 import { useAppSelector } from '../../redux/hooks'
-import { useEffect, useState } from 'react'
+import React from 'react'
 
 const NewProducts = () => {
   const newProducts = useAppSelector(state => state.productsNew.items)
 
   // Expected server HTML to contain a matching <div> in <div>. Error Component Stack
 
-  const [mounted, setMounted] = useState(false)
+  // const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // useEffect(() => {
+  //   setMounted(true)
+  // }, [])
 
-  if (!mounted) return null
+  // if (!mounted) return null
 
   return (
     <>

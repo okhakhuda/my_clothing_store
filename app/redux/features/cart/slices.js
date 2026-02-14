@@ -15,14 +15,17 @@ const cartSlice = createSlice({
 
       if (existingItem) {
         existingItem.quantity += 1
+
         state.message = 'Товар успішно додано до кошика'
       } else {
         state.items.push({ ...action.payload, quantity: 1 })
+
         state.message = 'Товар успішно додано до кошика'
       }
     },
     removeFromCart: (state, action) => {
       state.items = state.items.filter(item => item.productId !== action.payload)
+
       state.message = 'Товар успішно видалено з кошика'
     },
     updateQuantity: (state, action) => {
@@ -33,6 +36,8 @@ const cartSlice = createSlice({
     },
     clearCart: state => {
       state.items = []
+
+      state.message = 'Кошик успішно очищено'
     },
     incrementQuantity: (state, action) => {
       if (action.payload.quantity >= 10) {
@@ -51,6 +56,7 @@ const cartSlice = createSlice({
       )
       if (item && item.quantity > 1) {
         item.quantity -= 1
+       
       } else if (item) {
         state.items = state.items.filter(item => item.size !== action.payload.size)
       }

@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { useModalStatus } from '../../../StoreProviderModalStatus'
 import s from './ModalStatus.module.scss'
@@ -15,6 +17,5 @@ export const ModalStatus = () => {
         x
       </button>
     </div>
-  
   )
 }

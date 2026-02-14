@@ -25,8 +25,6 @@ export const ModalCategory = ({ categoryData, isOpen, onClose, isEditing }) => {
     }
   }, [mainCategories])
 
-  console.log('mainId', mainId)
-
   useEffect(() => {
     if (categoryData) {
       setFormCategoryData(prevProduct => ({
@@ -170,7 +168,7 @@ export const ModalCategory = ({ categoryData, isOpen, onClose, isEditing }) => {
             />
           </div>
           <button type="submit" className={s.btn}>
-            {isEditing ? 'Оновити товар' : 'Додати товар'}
+            {isEditing ? 'Оновити категорію' : 'Додати категорію'}
           </button>
           <button type="button" onClick={onClose}>
             Скасувати
