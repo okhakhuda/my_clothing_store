@@ -23,16 +23,16 @@ const cartSlice = createSlice({
         state.message = 'Товар успішно додано до кошика'
       }
     },
-    removeFromCart: (state, action) => {
-      state.items = state.items.filter(item => item.productId !== action.payload)
+    removeFromCart: (state, action) => { 
+      state.items = state.items.filter(
+        item =>
+      !(
+        item.productId === action.payload.productId &&
+        item.size === action.payload.size
+      )
+  )
 
       state.message = 'Товар успішно видалено з кошика'
-    },
-    updateQuantity: (state, action) => {
-      const item = state.items.find(item => item.productId === action.payload.productId)
-      if (item) {
-        item.quantity = action.payload.quantity
-      }
     },
     clearCart: state => {
       state.items = []
@@ -46,7 +46,7 @@ const cartSlice = createSlice({
       const item = state.items.find(
         item => item.productId === action.payload.productId && item.size === action.payload.size,
       )
-      if (item) {
+      if (item) { 
         item.quantity += 1
       }
     },
@@ -56,15 +56,8 @@ const cartSlice = createSlice({
       )
       if (item && item.quantity > 1) {
         item.quantity -= 1
-       
       } else if (item) {
         state.items = state.items.filter(item => item.size !== action.payload.size)
-      }
-    },
-    setQuantity: (state, action) => {
-      const item = state.items.find(item => item.productId === action.payload.productId)
-      if (item) {
-        item.quantity = action.payload.newQuantity
       }
     },
     clearCartMessage: state => {
@@ -80,7 +73,6 @@ export const {
   clearCart,
   incrementQuantity,
   decrementQuantity,
-  setQuantity,
   clearCartMessage,
 } = cartSlice.actions
 export const cartReducer = cartSlice.reducer

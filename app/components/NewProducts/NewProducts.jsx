@@ -2,11 +2,21 @@
 
 import s from './NewProducts.module.scss'
 import Slider from '../Slider/Slider'
-import { useAppSelector } from '../../redux/hooks'
-import React from 'react'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import React, { use } from 'react'
+import { useEffect } from 'react'
+import { fetchNewProductsThunk } from '../../redux/features/products/thunks'
 
 const NewProducts = () => {
   const newProducts = useAppSelector(state => state.productsNew.items)
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (!newProducts || newProducts.length === 0) {
+      dispatch(fetchNewProductsThunk())
+    }
+  }, [dispatch, newProducts])
 
   // Expected server HTML to contain a matching <div> in <div>. Error Component Stack
 

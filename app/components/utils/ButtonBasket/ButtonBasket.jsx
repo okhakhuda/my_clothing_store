@@ -8,6 +8,7 @@ import { useAppDispatch } from '@/app/redux/hooks'
 import s from './ButtonBasket.module.scss'
 
 export const ButtonBasket = ({ product }) => {
+  
   const dispatch = useAppDispatch()
 
   const handlAddToCart = async e => {

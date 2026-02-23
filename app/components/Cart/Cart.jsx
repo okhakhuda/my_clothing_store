@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { incrementQuantity, decrementQuantity, setQuantity } from '@/app/redux/features/cart/slices'
+import { incrementQuantity, decrementQuantity } from '@/app/redux/features/cart/slices'
 import { createOrderThunk } from '@/app/redux/features/order/thunks'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
 import s from './Cart.module.scss'
@@ -12,9 +12,11 @@ import { GiShoppingCart } from 'react-icons/gi'
 import { removeFromCart } from '../../redux/features/cart/slices'
 import { useModalConfirm } from '../../components/hooks/useModalConfirm'
 import { ModalConfirm } from '../../components/utils/ModalConfirmation/ModalConfirm'
-import Header from '../../components/Header/Header'
+
 
 export default function Cart() {
+  const dispatch = useAppDispatch()
+
   const [order, setOrder] = useState({
     user: {
       firstame: '',
@@ -54,14 +56,10 @@ export default function Cart() {
 
   const user = useAppSelector(state => state.auth.user)
 
-  const dispatch = useAppDispatch()
-
   const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0)
 
-  const handleIncrement = e => {
-    const productId = e.target.dataset.productId
-    const size = e.target.dataset.size
+  const handleIncrement = (productId, size) => {
     const product = cart.find(item => item.productId === productId && item.size === size)
 
     if (product) {
@@ -69,13 +67,11 @@ export default function Cart() {
     }
   }
 
-  const handleDecrement = e => {
-    const productId = e.target.dataset.productId
-    const size = e.target.dataset.size
+  const handleDecrement = (productId, size) => {
     const product = cart.find(item => item.productId === productId && item.size === size)
 
     if (product) {
-      dispatch(decrementQuantity({ productId, size }))
+      dispatch(decrementQuantity({ productId, size, quantity: product.quantity }))
     }
   }
 
@@ -86,12 +82,12 @@ export default function Cart() {
     setDepartment(deliveryInfo.department)
   }
 
-  const handleDeleteClick = (productId, name) => {
+  const handleDeleteClick = (productId, name, size) => {
     const product = cart.find(item => item.productId === productId)
     if (product) {
       setConfirmMessage(`Ви впевнені, що хочете видалити "${name}" з кошика?`)
       openConfirmModal(() => {
-        dispatch(removeFromCart(productId))
+        dispatch(removeFromCart({productId, size}))
         setConfirmMessage('')
       })
     }
@@ -149,8 +145,7 @@ export default function Cart() {
   }
 
   return (
-    <>
-      <Header />
+    <div className={s.wrapper}>
       <div>
         <ModalConfirm
           isModalConfirmOpen={isModalConfirmOpen}
@@ -161,14 +156,14 @@ export default function Cart() {
       </div>
 
       <div>
-        <h1>Кошик</h1>
+        <h1 className={s.title}>Кошик</h1>
 
         <div>
-          <ul>
+          <ul className={s.list}>
             {cart.map((item, index) => (
               <li key={item.productId + item.size} className={s.card}>
-                <Link href={'/'} rel="preload">
-                  <Image src={item.image} alt={item.name} width={100} height={100} className={s.img} priority />
+                <Link href={`/${item.genderCategory}/${item.category}/${item.productId}`} rel="preload">
+                  <Image src={item.image} alt={item.name} width={200} height={300} className={s.img} priority />
                 </Link>
                 <p>{item.name}</p>
                 <p>Арт: {item.article}</p>
@@ -179,9 +174,8 @@ export default function Cart() {
                 <div>
                   <button
                     type="button"
-                    onClick={handleDecrement}
-                    data-product-id={item.productId}
-                    data-size={item.size}
+                    className={s.button}
+                    onClick={() => handleDecrement(item.productId, item.size)}
                   >
                     -
                   </button>
@@ -199,16 +193,15 @@ export default function Cart() {
                   />
                   <button
                     type="button"
-                    onClick={handleIncrement}
-                    data-product-id={item.productId}
-                    data-size={item.size}
+                    className={s.button}
+                    onClick={() => handleIncrement(item.productId, item.size)}
                   >
                     +
                   </button>
                   <button
                     type="button"
                     className={s.button}
-                    onClick={() => handleDeleteClick(item.productId, item.name)}
+                    onClick={() => handleDeleteClick(item.productId, item.name, item.size)}
                   >
                     <GiShoppingCart />
                     <p>DELETE</p>
@@ -217,16 +210,12 @@ export default function Cart() {
               </li>
             ))}
           </ul>
-          <div className={s.total}>
-            <p>Total Price: {totalPrice} ₴</p>
-            <p>Total Quantity: {totalQuantity} шт.</p>
-            {/* <Link href={'/'} rel="preload" className={s.btn}>
-              Checkout
-            </Link>
-            <Link href={'/'} rel="preload" className={s.btn}>
-              Continue Shopping
-            </Link> */}
-            <div>
+          <div className={s.suma}>
+            <p>Кількість: {totalQuantity} шт.</p>
+            <p>Сума: {totalPrice} ₴</p>
+            </div>
+            <div className={s.total}>
+              <p>Дані для замовлення</p>
               <label htmlFor="firstname">Ім&#39;я</label>
               <input
                 type="text"
@@ -259,7 +248,7 @@ export default function Cart() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="Email"
               />
-            </div>
+            
           </div>
         </div>
 
@@ -270,6 +259,6 @@ export default function Cart() {
           Оформити замовлення
         </button>
       </div>
-    </>
+    </div>
   )
 }

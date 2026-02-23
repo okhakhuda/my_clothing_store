@@ -1,4 +1,7 @@
+"use client"
+
 import React, { useState, useEffect } from 'react'
+import s from './DeliverySelection.module.scss'
 
 const DeliverySelection = ({ onDeliverySelected }) => {
   const [selectedProvider, setSelectedProvider] = useState('novaPoshta')
@@ -209,10 +212,10 @@ const DeliverySelection = ({ onDeliverySelected }) => {
   }
 
   return (
-    <div className="delivery-selection">
-      <h3>Вибір доставки</h3>
+    <div className={s.wrapper}>
+      <h3 className={s.title}>Вибір доставки</h3>
 
-      <div className="delivery-providers">
+      <div className={s.providers}>
         <label>
           <input
             type="radio"
@@ -236,11 +239,11 @@ const DeliverySelection = ({ onDeliverySelected }) => {
         </label> */}
       </div>
 
-      {isLoading && <p>Завантаження даних...</p>}
-      {error && <p className="error">{error}</p>}
+      {isLoading && <p className={s.loading}>Завантаження даних...</p>}
+      {error && <p className={s.error}>{error}</p>}
 
-      <div className="delivery-fields">
-        <div className="form-group">
+      <div className={s.fields}>
+        <div className={s.group}>
           <label>Область:</label>
           <select value={selectedRegion} onChange={selectedRegionChange} disabled={!regions.length || isLoading}>
             <option value="">Виберіть область</option>
@@ -252,7 +255,7 @@ const DeliverySelection = ({ onDeliverySelected }) => {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className={s.group}>
           <label>Місто:</label>
           <select
             value={selectedCity}
@@ -269,7 +272,7 @@ const DeliverySelection = ({ onDeliverySelected }) => {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className={s.group}>
           <label>Відділення:</label>
           <select
             value={selectedDepartment}

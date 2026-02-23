@@ -7,8 +7,6 @@ import Link from 'next/link'
 import Head from 'next/head'
 import { StoreProviderModalStatus } from './StoreProviderModalStatus'
 import s from './page.module.scss'
-import AppShell from './components/AppShell/AppShell'
-import { makeStore } from './redux/store'
 
 export const metadata = {
   icons: {
@@ -41,6 +39,7 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="uk" className={`${inter.variable} ${amaranth.variable} ${philosopher.variable}`}>
       <Head>
@@ -49,6 +48,7 @@ export default function RootLayout({ children }) {
       <body>
         <StoreProvider>
           <StoreProviderModalStatus>
+            <Header />
             <main className={s.main}>{children}</main>
             <Footer />
           </StoreProviderModalStatus>

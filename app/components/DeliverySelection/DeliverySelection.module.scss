@@ -1,0 +1,93 @@
+.wrapper {
+  margin-top: 32px;
+  padding: 24px;
+  background: #fafafa;
+  border-radius: 16px;
+  display: grid;
+  gap: 20px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* PROVIDERS */
+.providers {
+  display: flex;
+  gap: 20px;
+}
+
+.providers label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.providers input {
+    
+  accent-color: #000;
+}
+
+/* FIELDS */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); // 👈 важливо
+  gap: 16px;
+
+  width: 100%;
+  max-width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.group label {
+  font-size: 13px;
+  color: #555;
+}
+
+.group select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+
+  &:disabled {
+    background: #f1f1f1;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #000;
+  }
+}
+
+/* STATES */
+.loading {
+  font-size: 14px;
+  color: #666;
+}
+
+.error {
+  font-size: 14px;
+  color: #d80000;
+}

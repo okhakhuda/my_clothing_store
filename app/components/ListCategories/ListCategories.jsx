@@ -2,24 +2,23 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useAppSelector } from '@/app/redux/hooks'
-import Loader from '../Loader/Loader'
+import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
 import s from './ListCategories.module.scss'
-import Header from '../Header/Header'
+import { useEffect } from 'react'
+import { fetchCategoryByMainSlugThunk } from '../../redux/features/categories/thunks'
 
 const ListCategories = ({ mainSlug }) => {
-  const { items, isLoading } = useAppSelector(state => state.categoryByMainSlug)
+  const {items} = useAppSelector(state => state.categoryByMainSlug)
 
-  const productsByCat = useAppSelector(state => state.productsByCat.items)
-  console.log('productsByCat', productsByCat)
+  const dispatch = useAppDispatch()
 
-  // if (isLoading) {
-  //   return <Loader />
-  // }
+  useEffect(() => { 
+    dispatch(fetchCategoryByMainSlugThunk(mainSlug))
+  }, [dispatch, mainSlug])
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className={s.category}>
         <ul className={s.list_category}>
           <li className={s.category_item}>
@@ -27,7 +26,7 @@ const ListCategories = ({ mainSlug }) => {
               <p className={`${s.title} ${s.all_title}`}>ALL</p>
             </Link>
           </li>
-          {items ? (
+          {items.length > 0 ? (
             items.map(category => (
               <li className={s.category_item} key={category.id}>
                 <Link className={s.link} rel="preload" href={category.slug}>

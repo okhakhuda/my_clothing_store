@@ -6,12 +6,12 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { makeStore } from '../app/redux/store'
 import { persistStore } from 'redux-persist'
 
-export default function StoreProvider({ children, preloadedState }) {
+export default function StoreProvider({ children }) {
   const storeRef = useRef(null)
   const persistorRef = useRef(null)
 
   if (!storeRef.current) {
-    storeRef.current = makeStore(preloadedState)
+    storeRef.current = makeStore()
     persistorRef.current = persistStore(storeRef.current)
   }
 

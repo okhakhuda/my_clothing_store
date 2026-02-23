@@ -18,6 +18,7 @@ const Sidebar = () => {
   // console.log('isAuthAdmin', isAuthAdmin)
   const dispatch = useAppDispatch()
 
+
   const toggleSidebar = () => {
     setToggle(!toggle)
   }
@@ -44,7 +45,7 @@ const Sidebar = () => {
           <button type="button" className={s.sidebar_btn_close} onClick={toggleSidebar}>
             <AiOutlineClose size={20} />
           </button>
-
+          
           {isAuth ? (
             <ul>
               <li>
@@ -79,6 +80,7 @@ const Sidebar = () => {
             </ul>
           )}
         </div>
+      
       </>
     </div>
   )

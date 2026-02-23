@@ -30,7 +30,7 @@ const cartPersistConfig = {
 }
 const cartPersistReducer = persistReducer(cartPersistConfig, cartReducer)
 
-export const makeStore = preloadedState => {
+export const makeStore = () => {
   return configureStore({
     reducer: {
       auth: authPersistReducer,
@@ -46,7 +46,7 @@ export const makeStore = preloadedState => {
       allOrder: orderAllReducer,
       orderByUser: orderByUserReducer,
     },
-    preloadedState,
+    // preloadedState,
     devTools: process.env.NODE_ENV !== 'production',
 
     middleware: getDefaultMiddleware =>

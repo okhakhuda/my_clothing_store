@@ -3,18 +3,20 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import s from '../Product/Product.module.scss'
-
-import { useAppSelector } from '@/app/redux/hooks'
+import { fetchProductByIdThunk } from '@/app/redux/features/products/thunks'
+import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
 import { ButtonBasket } from '../utils/ButtonBasket/ButtonBasket'
-import Header from '../Header/Header'
 
-const Product = () => {
-  const cart = useAppSelector(state => state.cart.items)
-  const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0)
-  console.log(totalQuantity)
+const Product = ({ productId }) => {
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchProductByIdThunk(productId))
+  }, [dispatch, productId])
 
   const product = useAppSelector(state => state.productById.items)
-
+  
   const [dataProduct, setDataProduct] = useState({})
 
   const [size, setSize] = useState('')
@@ -36,6 +38,8 @@ const Product = () => {
         color: product.color,
         image: product.image?.[0]?.url || '',
         size: size || selectedSize,
+        genderCategory: product.genderCategory?.slug || '',
+        category: product.category?.slug || '',
       })
     }
   }, [product, size])
@@ -46,9 +50,8 @@ const Product = () => {
 
   return (
     <>
-      <Header />
       <div className={s.card}>
-        {product ? (
+        {product && Object.keys(product).length > 0 ? (
           <>
             <div>
               <ul>

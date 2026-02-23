@@ -7,19 +7,19 @@ import HomePageContent from './components/HomePageContent/HomePageContent'
 import Header from './components/Header/Header'
 
 const Home = async () => {
-  const store = makeStore()
+  // const store = makeStore()
 
-  await store.dispatch(fetchMainCategoryThunk())
-  await store.dispatch(fetchNewProductsThunk())
+  // await store.dispatch(fetchMainCategoryThunk())
+  // await store.dispatch(fetchNewProductsThunk())
 
-  const state = store.getState()
+  // const state = store.getState()
 
   return (
     <>
-      <StoreProvider preloadedState={state}>
-        <Header />
+      {/* <StoreProvider preloadedState={state}> */}
+        {/* <Header /> */}
         <HomePageContent />
-      </StoreProvider>
+      {/* </StoreProvider> */}
     </>
   )
 }

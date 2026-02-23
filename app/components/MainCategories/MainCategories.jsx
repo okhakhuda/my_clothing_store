@@ -3,11 +3,23 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import s from './MainCategories.module.scss'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppSelector, useAppDispatch } from '../../redux/hooks'
 import Loader from '../Loader/Loader'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { fetchMainCategoryThunk } from '../../redux/features/mainCategories/thunks'
 
 const MainCategories = () => {
   const { items, isLoading } = useAppSelector(state => state.mainCategory)
+    
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (!items || items.length === 0) {
+      dispatch(fetchMainCategoryThunk())
+    }
+  }, [dispatch, items])
+
   // const isLoading = useAppSelector(state => state.mainCategory.isLoading)
 
   // Expected server HTML to contain a matching <div> in <div>. Error Component Stack
