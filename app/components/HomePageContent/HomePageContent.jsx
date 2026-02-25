@@ -6,14 +6,11 @@ import MainCategories from '../MainCategories/MainCategories'
 import NewProducts from '../NewProducts/NewProducts'
 import { useAppDispatch, useAppStore } from '../../redux/hooks'
 import { currentThunk } from '../../redux/features/auth/thunks'
-import { useStore } from 'react-redux'
 import { useEffect } from 'react'
-import Header from '../Header/Header'
 
 const HomePageContent = () => {
   const dispatch = useAppDispatch()
   const store = useAppStore()
-  // const store = useStore()
 
   useEffect(() => {
     const state = store.getState()
@@ -27,7 +24,6 @@ const HomePageContent = () => {
 
   return (
     <div>
-      {/* <Header /> */}
       <Hero />
       <MainCategories />
       <NewProducts />

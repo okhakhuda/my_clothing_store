@@ -1,8 +1,30 @@
 @import '../../sass-partial/mixins';
 
-@include respond(sm-max) {
-  .cartWrapper {
-    padding: 16px;
+.emptyCart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 16px;
+}
+
+.emptyCartTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+}
+
+.emptyCartLink {
+  padding: 12px 24px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+
+  &:hover {
+    background-color: var(--secondary-color);
+    transition: background-color var(--main-transition);
   }
 }
 
@@ -13,6 +35,10 @@
 
   @include respond(xl-min) {
     padding: 48px 32px;
+  }
+
+  @include respond(sm-max) {
+    padding: 16px;
   }
 }
 
@@ -47,29 +73,34 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  @include respond(md-min) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
 }
 
 .productCard {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 24px;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: #fff;
   transition: all 0.2s ease;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  @include respond(md-max) {
+  @include respond(sm-min) {
+    display: flex;
     gap: 16px;
     padding: 16px;
   }
 
   @include respond(sm-max) {
-    flex-direction: column;
     gap: 16px;
   }
 }
@@ -80,8 +111,8 @@
 }
 
 .productImage {
-  width: 120px;
-  height: 180px;
+  width: 220px;
+  height: 280px;
   object-fit: cover;
   border-radius: 8px;
   transition: transform 0.2s ease;
@@ -108,6 +139,11 @@
   justify-content: center;
   flex: 1;
   min-width: 0;
+
+  @include respond(sm-max) {
+    margin-bottom: 20px;
+    padding: 8px;
+  }
 }
 
 .productName {
@@ -133,15 +169,24 @@
 }
 
 .quantityControls {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+
+  @include respond(sm-max) {
+    flex-direction: row;
+    padding: 8px;
+  }
 }
 
 .quantityButtons {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-content: space-between;
   gap: 8px;
-  padding-bottom: 60px;
+  // padding-bottom: 60px;
 }
 
 .quantityButton,
@@ -163,6 +208,12 @@
 
   &:active {
     transform: scale(0.98);
+  }
+}
+
+.deleteButtonContainer {
+  @include respond(sm-max) {
+    order: 2;
   }
 }
 
@@ -241,7 +292,7 @@
   background: #fff;
   padding: 32px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e5e7eb;
 
   @include respond(sm-max) {
@@ -359,6 +410,3 @@
 .modalConfirm {
   z-index: 1000;
 }
-
-
-

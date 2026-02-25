@@ -18,7 +18,27 @@ const PHONE_REGEX = /^(\+380|0)[5-9]\d{8}$/
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const NAME_REGEX = /^[а-яА-ЯїєґІЇЄҐ'`ʼʼ' ]{2,50}$/
 
-const UA_OPERATORS = ['039','067','068','077', '096', '097', '098', '050', '066', '075', '095', '099', '063', '073', '093', '091', '092', '089', '094']
+const UA_OPERATORS = [
+  '039',
+  '067',
+  '068',
+  '077',
+  '096',
+  '097',
+  '098',
+  '050',
+  '066',
+  '075',
+  '095',
+  '099',
+  '063',
+  '073',
+  '093',
+  '091',
+  '092',
+  '089',
+  '094',
+]
 
 export default function Cart() {
   const dispatch = useAppDispatch()
@@ -30,8 +50,7 @@ export default function Cart() {
     email: '',
   })
 
-  console.log(errors.phone);
-  
+  console.log(errors.phone)
 
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
@@ -47,26 +66,25 @@ export default function Cart() {
 
   const validateField = (name, value) => {
     let error = ''
-    
+
     switch (name) {
       case 'firstname':
       case 'lastname':
         if (!value.trim()) {
-          error = 'Поле обов\'язкове'
+          error = "Поле обов'язкове"
         } else if (value.trim().length < 2) {
           error = 'Мінімум 2 символи'
         } else if (!NAME_REGEX.test(value)) {
           error = 'Тільки кириличні літери, апостроф та пробіл'
         }
         break
-        
+
       case 'phone':
         const cleanDigits = value.replace(/[^\d]/g, '')
-        
+
         if (!value.trim()) {
           error = ''
-        } 
-        else if (cleanDigits.length === 0) {
+        } else if (cleanDigits.length === 0) {
           error = ''
         }
         // ✅ Тільки 10 або 12 цифр
@@ -83,68 +101,65 @@ export default function Cart() {
           if (!UA_OPERATORS.includes(operator)) {
             error = 'Некоректний код оператора'
           }
-        }
-        else if (cleanDigits.length === 12) {
+        } else if (cleanDigits.length === 12) {
           const operator = cleanDigits.slice(2, 5)
-          console.log(operator);
-          
+          console.log(operator)
+
           if (!UA_OPERATORS.includes(operator)) {
             error = 'Некоректний код оператора'
           }
         }
         break
-        
+
       case 'email':
-        if (!value.trim()) error = 'Email обов\'язковий'
+        if (!value.trim()) error = "Email обов'язковий"
         else if (!EMAIL_REGEX.test(value)) error = 'Некоректний email'
         break
     }
     return error
   }
 
-  const handleFirstnameChange = (e) => {
+  const handleFirstnameChange = e => {
     // ✅ Блокуємо латинські символи та цифри на рівні input
     let value = e.target.value
       .replace(/\s+/g, ' ') // Один пробіл замість кількох
       .trimStart() // Прибираємо пробіл на початку
-    
+
     // ✅ Максимум 50 символів
     value = value.slice(0, 50)
-    
+
     setFirstname(value)
-    setErrors(prev => ({ 
-      ...prev, 
-      firstname: validateField('firstname', value) 
+    setErrors(prev => ({
+      ...prev,
+      firstname: validateField('firstname', value),
     }))
   }
 
-  const handleLastnameChange = (e) => {
+  const handleLastnameChange = e => {
     // ✅ Точно така ж логіка для прізвища
-    let value = e.target.value
-      .replace(/\s+/g, ' ')
-      .trimStart()
-    
+    let value = e.target.value.replace(/\s+/g, ' ').trimStart()
+
     value = value.slice(0, 50)
-    
+
     setLastname(value)
-    setErrors(prev => ({ 
-      ...prev, 
-      lastname: validateField('lastname', value) 
+    setErrors(prev => ({
+      ...prev,
+      lastname: validateField('lastname', value),
     }))
   }
 
-  const handlePhoneChange = (e) => {
+  const handlePhoneChange = e => {
     let value = e.target.value.replace(/[^\d+]/g, '')
     const cleanDigits = value.replace(/[^\d]/g, '')
-    
+
     // ✅ ЖОРСТКЕ ОБМЕЖЕННЯ: тільки 12 символів максимум
     if (cleanDigits.length > 12) {
       return // Блокуємо зайві символи
     }
-    
+
     // ✅ Форматування тільки правильних номерів
     let formattedValue = ''
-    
+
     if (cleanDigits.startsWith('380') && cleanDigits.length <= 12) {
       // ✅ +380 тільки якщо є всі 12 цифр
       if (cleanDigits.length === 12) {
@@ -152,35 +167,30 @@ export default function Cart() {
       } else {
         formattedValue = '+380' + cleanDigits.slice(3)
       }
-    } 
-    else if (cleanDigits.startsWith('0') && cleanDigits.length <= 10) {
+    } else if (cleanDigits.startsWith('0') && cleanDigits.length <= 10) {
       formattedValue = '0' + cleanDigits.slice(1)
-    }
-    else {
+    } else {
       formattedValue = value
     }
-    
+
     setPhone(formattedValue)
-    
+
     // ✅ Валідація в реальному часі
     let phoneError = ''
     if (cleanDigits.length === 0) {
       phoneError = ''
-    } 
-    else if (cleanDigits.length < 10) {
+    } else if (cleanDigits.length < 10) {
       phoneError = `Потрібно ${10 - cleanDigits.length} цифр`
-    }
-    else if (cleanDigits.length > 12) {
+    } else if (cleanDigits.length > 12) {
       phoneError = 'Занадто довгий номер'
-    }
-    else {
+    } else {
       phoneError = validateField('phone', formattedValue)
     }
-    
+
     setErrors(prev => ({ ...prev, phone: phoneError }))
   }
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = e => {
     const value = e.target.value
     setEmail(value)
     setErrors(prev => ({ ...prev, email: validateField('email', value) }))
@@ -220,7 +230,7 @@ export default function Cart() {
   const handleDeleteClick = (productId, name, size) => {
     setConfirmMessage(`Ви впевнені, що хочете видалити "${name}" з кошика?`)
     openConfirmModal(() => {
-      dispatch(removeFromCart({productId, size}))
+      dispatch(removeFromCart({ productId, size }))
       setConfirmMessage('')
     })
   }
@@ -231,7 +241,6 @@ export default function Cart() {
     setCity(deliveryInfo.city)
     setDepartment(deliveryInfo.department)
   }
-
 
   const [order, setOrder] = useState({
     user: { firstName: '', lastName: '', phone: '', email: '' },
@@ -276,6 +285,17 @@ export default function Cart() {
     dispatch(createOrderThunk({ ...order, userId: user?.id }))
   }
 
+  if (cart.length === 0) {
+    return (
+      <div className={s.emptyCart}>
+        <h2 className={s.emptyCartTitle}>Кошик порожній</h2>
+        <Link href="/" className={s.emptyCartLink}>
+          Перейти до каталогу
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div className={s.cartWrapper}>
       <ModalConfirm
@@ -291,19 +311,19 @@ export default function Cart() {
 
         <div className={s.cartContent}>
           <ul className={s.productsList}>
-            {cart.map((item) => (
+            {cart.map(item => (
               <li key={`${item.productId}-${item.size}`} className={s.productCard}>
                 <Link href={`/${item.genderCategory}/${item.category}/${item.productId}`} className={s.productLink}>
-                  <Image 
-                    src={item.image} 
-                    alt={item.name} 
-                    width={200} 
-                    height={300} 
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={200}
+                    height={300}
                     className={s.productImage}
-                    priority 
+                    priority
                   />
                 </Link>
-                
+
                 <div className={s.productInfo}>
                   <p className={s.productName}>{item.name}</p>
                   <p className={s.productArticle}>Арт: {item.article}</p>
@@ -313,38 +333,33 @@ export default function Cart() {
                 </div>
 
                 <div className={s.quantityControls}>
+                  <div className={s.deleteButtonContainer}>
+                    <button
+                      type="button"
+                      className={s.deleteButton}
+                      onClick={() => handleDeleteClick(item.productId, item.name, item.size)}
+                    >
+                      <GiShoppingCart className={s.deleteIcon} />
+                      <span className={s.deleteText}>Видалити</span>
+                    </button>
+                  </div>
                   <div className={s.quantityButtons}>
                     <button
-                    type="button"
-                    className={s.quantityButton}
-                    onClick={() => handleDecrement(item.productId, item.size)}
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    className={s.quantityInput}
-                    value={item.quantity}
-                    disabled
-                  />
-                  <button
-                    type="button"
-                    className={s.quantityButton}
-                    onClick={() => handleIncrement(item.productId, item.size)}
-                  >
-                    +
-                  </button>
-                    </div>
-                  <button
-                    type="button"
-                    className={s.deleteButton}
-                    onClick={() => handleDeleteClick(item.productId, item.name, item.size)}
-                  >                   
-                    <GiShoppingCart className={s.deleteIcon} />
-                    <span className={s.deleteText}>Видалити</span>
-                  </button>
+                      type="button"
+                      className={s.quantityButton}
+                      onClick={() => handleDecrement(item.productId, item.size)}
+                    >
+                      -
+                    </button>
+                    <input type="number" min="1" max="10" className={s.quantityInput} value={item.quantity} disabled />
+                    <button
+                      type="button"
+                      className={s.quantityButton}
+                      onClick={() => handleIncrement(item.productId, item.size)}
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}
@@ -358,9 +373,11 @@ export default function Cart() {
           <form className={s.orderForm} onSubmit={handleSubmit}>
             <div className={s.formSection}>
               <h2 className={s.formTitle}>Дані для замовлення</h2>
-              
+
               <div className={s.formGroup}>
-                <label htmlFor="firstname" className={s.formLabel}>Ім'я</label>
+                <label htmlFor="firstname" className={s.formLabel}>
+                  Ім'я
+                </label>
                 <input
                   type="text"
                   id="firstname"
@@ -373,7 +390,9 @@ export default function Cart() {
               </div>
 
               <div className={s.formGroup}>
-                <label htmlFor="lastname" className={s.formLabel}>Прізвище</label>
+                <label htmlFor="lastname" className={s.formLabel}>
+                  Прізвище
+                </label>
                 <input
                   type="text"
                   id="lastname"
@@ -386,7 +405,9 @@ export default function Cart() {
               </div>
 
               <div className={s.formGroup}>
-                <label htmlFor="phone" className={s.formLabel}>Телефон</label>
+                <label htmlFor="phone" className={s.formLabel}>
+                  Телефон
+                </label>
                 <input
                   type="tel"
                   id="phone"
@@ -399,7 +420,9 @@ export default function Cart() {
               </div>
 
               <div className={s.formGroup}>
-                <label htmlFor="email" className={s.formLabel}>Email</label>
+                <label htmlFor="email" className={s.formLabel}>
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -418,8 +441,8 @@ export default function Cart() {
           <DeliverySelection onDeliverySelected={handleDeliverySelected} />
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={`${s.submitButton} ${disabled ? s.submitButtonDisabled : ''}`}
           disabled={disabled}
           onClick={handleSubmit}
@@ -430,8 +453,6 @@ export default function Cart() {
     </div>
   )
 }
-
-
 
 // 'use client'
 
@@ -447,7 +468,6 @@ export default function Cart() {
 // import { removeFromCart } from '../../redux/features/cart/slices'
 // import { useModalConfirm } from '../../components/hooks/useModalConfirm'
 // import { ModalConfirm } from '../../components/utils/ModalConfirmation/ModalConfirm'
-
 
 // export default function Cart() {
 //   const dispatch = useAppDispatch()
@@ -683,7 +703,7 @@ export default function Cart() {
 //                 onChange={e => setEmail(e.target.value)}
 //                 placeholder="Email"
 //               />
-            
+
 //           </div>
 //         </div>
 
