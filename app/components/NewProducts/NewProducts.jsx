@@ -29,14 +29,14 @@ const NewProducts = () => {
   // if (!mounted) return null
 
   return (
-    <>
+    <section className={s.section}>
       {newProducts && (
         <div className={s.slider}>
           <h2 className={s.title}>Новинки</h2>
           <Slider products={newProducts} />
         </div>
       )}
-    </>
+    </section>
   )
 }
 

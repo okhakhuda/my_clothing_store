@@ -1,7 +1,6 @@
 'use client'
 
-import React, { use } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { CiMenuFries } from 'react-icons/ci'
 import { AiOutlineClose } from 'react-icons/ai'
 import s from './Sidebar.module.scss'
@@ -13,11 +12,9 @@ import { logoutThunk } from '@/app/redux/features/auth/thunks'
 const Sidebar = () => {
   const [toggle, setToggle] = useState(false)
   const isAuth = useAppSelector(state => state.auth.isAuth)
-  // console.log('isAuth', isAuth)
   const isAuthAdmin = useAppSelector(state => state.auth.user?.role)
-  // console.log('isAuthAdmin', isAuthAdmin)
-  const dispatch = useAppDispatch()
 
+  const dispatch = useAppDispatch()
 
   const toggleSidebar = () => {
     setToggle(!toggle)
@@ -45,7 +42,7 @@ const Sidebar = () => {
           <button type="button" className={s.sidebar_btn_close} onClick={toggleSidebar}>
             <AiOutlineClose size={20} />
           </button>
-          
+
           {isAuth ? (
             <ul>
               <li>
@@ -54,7 +51,7 @@ const Sidebar = () => {
                     Панель керування
                   </Link>
                 ) : (
-                  <Link onClick={toggleSidebar} href={'./profile'} rel="preload">
+                  <Link onClick={toggleSidebar} href={'../../profile'} rel="preload">
                     Особистий кабінет
                   </Link>
                 )}
@@ -68,19 +65,18 @@ const Sidebar = () => {
           ) : (
             <ul>
               <li>
-                <Link onClick={toggleSidebar} href={'./login'} rel="preload">
+                <Link onClick={toggleSidebar} href={'../../login'} rel="preload">
                   Логін
                 </Link>
               </li>
               <li>
-                <Link onClick={toggleSidebar} href={'./register'} rel="preload">
+                <Link onClick={toggleSidebar} href={'../../register'} rel="preload">
                   Реєстрація
                 </Link>
               </li>
             </ul>
           )}
         </div>
-      
       </>
     </div>
   )

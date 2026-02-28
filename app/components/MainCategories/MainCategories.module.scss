@@ -1,12 +1,16 @@
 @import '../../sass-partial/placeholder';
 
+.main_categories {
+  padding: 0 16px;
+}
+
 .main {
   margin-bottom: 30px;
 }
 
 .title {
   font-size: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   padding-left: 10px;

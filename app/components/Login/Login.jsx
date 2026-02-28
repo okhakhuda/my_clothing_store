@@ -75,6 +75,7 @@ function Login() {
                 onChange={value => handleChange('password', value)}
                 error={errors.password}
                 disabled={isLoading}
+                placeholder="Введіть ваш пароль"
                 className={s.formField}
               />
             </div>

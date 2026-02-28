@@ -1,7 +1,7 @@
 @import '../../sass-partial/mixins';
 
 .deliveryWrapper {
-  max-width: 600px;
+  max-width: 100vh;
   margin: 0 auto;
 
   @include respond(xl-min) {
@@ -341,7 +341,7 @@
 
 @include respond(sm-max) {
   .selectionFields {
-    gap: 20px;
+    max-width: 100vh;
   }
 
   .providerLabel {

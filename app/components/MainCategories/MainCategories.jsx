@@ -11,7 +11,7 @@ import { fetchMainCategoryThunk } from '../../redux/features/mainCategories/thun
 
 const MainCategories = () => {
   const { items, isLoading } = useAppSelector(state => state.mainCategory)
-    
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const MainCategories = () => {
   // if (!mounted) return null
 
   return (
-    <div>
+    <section className={s.main_categories}>
       <h2 className={s.title}>Обирай одяг для всієї сім&#39;ї</h2>
       {isLoading ? (
         <Loader />
@@ -60,7 +60,7 @@ const MainCategories = () => {
           )}
         </ul>
       )}
-    </div>
+    </section>
   )
 }
 

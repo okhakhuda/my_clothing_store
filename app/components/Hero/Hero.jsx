@@ -1,13 +1,13 @@
-import React from "react";
-import Image from "next/image";
-import HeroImageDesk from "../../../public/hero.webp";
-import HeroImageMob from "../../../public/hero_mobile.webp";
-import HeroImageTab from "../../../public/hero_tablet.webp";
-import s from "./Hero.module.scss";
+import React from 'react'
+import Image from 'next/image'
+import HeroImageDesk from '../../../public/hero.webp'
+import HeroImageMob from '../../../public/hero_mobile.webp'
+import HeroImageTab from '../../../public/hero_tablet.webp'
+import s from './Hero.module.scss'
 
 const Hero = () => {
   return (
-    <div className={s.hero}>
+    <section className={s.hero}>
       <Image
         className={s.hero_mob}
         src={HeroImageMob}
@@ -35,8 +35,8 @@ const Hero = () => {
         height="auto"
         sizes="100vw"
       />
-    </div>
-  );
-};
+    </section>
+  )
+}
 
-export default Hero;
+export default Hero

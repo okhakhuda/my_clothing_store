@@ -1,22 +1,17 @@
+@import '../../sass-partial/mixins';
+
 .hero {
-  width: auto;
+  max-width: 1600px;
   height: auto;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: -64px;
-  margin-bottom: 30px;
-
-  @media screen and (min-width: 768px) and (max-width: 1199.98px) {
-    margin-bottom: 40px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    margin-bottom: 60px;
-  }
 }
 
 .hero_mob {
   display: none;
 
-  @media screen and (max-width: 767.98px) {
+  @include respond(md-max) {
     display: block;
     width: 100%;
     max-width: 768px;
@@ -27,7 +22,7 @@
 .hero_tablet {
   display: none;
 
-  @media screen and (min-width: 768px) and (max-width: 1200px) {
+  @include respond(md-min_xl-max) {
     display: block;
     width: 100%;
     max-width: 1200px;
@@ -38,7 +33,7 @@
 .hero_desktop {
   display: none;
 
-  @media screen and (min-width: 1200px) {
+  @include respond(xl-min) {
     display: block;
     max-width: 100%;
     height: auto;

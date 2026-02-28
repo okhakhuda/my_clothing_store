@@ -53,6 +53,7 @@ const authSlice = createSlice({
           state.token = ''
         }
         state.isLoading = false
+        state.isAuth = true
         state.user = action.payload?.data
       })
       .addCase(currentThunk.rejected, (state, action) => {

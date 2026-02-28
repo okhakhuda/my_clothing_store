@@ -3,46 +3,89 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
-import s from './ListCategories.module.scss'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { fetchCategoryByMainSlugThunk } from '../../redux/features/categories/thunks'
+import s from './ListCategories.module.scss'
+import { MdCategory } from 'react-icons/md'
+import { useParams } from 'next/navigation'
+import allimage from '../../../public/all.jpg'
 
 const ListCategories = ({ mainSlug }) => {
-  const {items} = useAppSelector(state => state.categoryByMainSlug)
-
+  const { items, loading, error } = useAppSelector(state => state.categoryByMainSlug)
   const dispatch = useAppDispatch()
 
-  useEffect(() => { 
-    dispatch(fetchCategoryByMainSlugThunk(mainSlug))
+  const params = useParams()
+
+  useEffect(() => {
+    if (mainSlug) {
+      dispatch(fetchCategoryByMainSlugThunk(mainSlug))
+    }
   }, [dispatch, mainSlug])
 
+  const hasCategories = items.length > 0
+  const allCategories = useMemo(
+    () => [{ id: 'all', slug: `/${mainSlug}/all`, title: 'ВСЕ', image: allimage }, ...items],
+    [items, mainSlug],
+  )
+
+  if (error) {
+    return (
+      <section className={s.errorSection}>
+        <div className={s.errorContainer}>
+          <MdCategory className={s.errorIcon} />
+          <h3 className={s.errorTitle}>Помилка завантаження</h3>
+          <p className={s.errorText}>Не вдалося завантажити категорії</p>
+          <button className={s.retryButton} onClick={() => dispatch(fetchCategoryByMainSlugThunk(mainSlug))}>
+            Спробувати ще раз
+          </button>
+        </div>
+      </section>
+    )
+  }
+
   return (
-    <>
-      {/* <Header /> */}
-      <div className={s.category}>
-        <ul className={s.list_category}>
-          <li className={s.category_item}>
-            <Link className={s.link} rel="preload" href={`/${mainSlug}/all`}>
-              <p className={`${s.title} ${s.all_title}`}>ALL</p>
+    <nav className={s.categoriesNav} role="navigation" aria-label="Категорії">
+      <ul className={s.categoriesList} role="list">
+        {allCategories.map(category => (
+          <li
+            key={category.id}
+            className={`${s.categoryItem} ${category.slug.includes(params.categorySlug) ? s.activeCategory : ''}`}
+          >
+            <Link
+              href={category.slug}
+              className={s.categoryLink}
+              rel="preload"
+              aria-label={`Категорія ${category.title}`}
+            >
+              <div className={s.categoryImageWrapper}>
+                {category.image ? (
+                  <Image
+                    src={category.image}
+                    alt={category.title}
+                    width={80}
+                    height={100}
+                    className={s.categoryImage}
+                    priority
+                  />
+                ) : (
+                  <div className={s.categoryIconWrapper}>
+                    <MdCategory className={s.categoryIcon} />
+                  </div>
+                )}
+              </div>
+              <span className={s.categoryTitle}>{category.title}</span>
             </Link>
           </li>
-          {items.length > 0 ? (
-            items.map(category => (
-              <li className={s.category_item} key={category.id}>
-                <Link className={s.link} rel="preload" href={category.slug}>
-                  <div className={s.image_block}>
-                    <Image className={s.image} src={category.image} alt="category" width={50} height={70} priority />
-                  </div>
-                  <p className={s.title}>{category.title.toUpperCase()}</p>
-                </Link>
-              </li>
-            ))
-          ) : (
-            <div>Категорії не знайдено</div>
-          )}
-        </ul>
-      </div>
-    </>
+        ))}
+
+        {!hasCategories && !loading && (
+          <li className={s.emptyState}>
+            <MdCategory className={s.emptyIcon} />
+            <span className={s.emptyText}>Категорії не знайдено</span>
+          </li>
+        )}
+      </ul>
+    </nav>
   )
 }
 
