@@ -26,14 +26,17 @@ const UA_OPERATORS = [
 
 const PHONE_REGEX = /^(\+380|0)[5-9]\d{8}$/
 const NAME_REGEX = /^[а-яА-ЯїєґІЇЄҐ'`ʼʼ' ]{2,50}$/
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/
 const EMAIL_REGEX = /^[^\s@]+@[^@\s]+(\.[^@\s]+)+$/
 
-export function useFormValidation() {
+export function useFormValidation(isRegister = false) {
   const [values, setValues] = useState({
     firstname: '',
     lastname: '',
     phone: '',
     email: '',
+    password: '',
+    confirmPassword: '',
   })
 
   const [errors, setErrors] = useState({
@@ -41,9 +44,11 @@ export function useFormValidation() {
     lastname: '',
     phone: '',
     email: '',
+    password: '',
+    confirmPassword: '',
   })
 
-  const validateField = useCallback((name, value) => {
+  const validateField = useCallback((name, value, formValues = {}) => {
     let error = ''
 
     switch (name) {
@@ -70,12 +75,23 @@ export function useFormValidation() {
           error = 'Некоректний email'
         }
         break
+
+      case 'password':
+        if (!value) error = "Пароль обов'язковий"
+        else if (value.length < 8) error = 'Мінімум 8 символів'
+        else if (!PASSWORD_REGEX.test(value)) error = 'Мін. 1 цифра, 1 велика, 1 мала літера'
+        break
+
+      case 'confirmPassword':
+        if (!value) error = 'Підтвердіть пароль'
+        else if (value !== formValues.password) error = 'Паролі не співпадають'
+        break
     }
     return error
   }, [])
 
   const handleChange = useCallback(
-    (name, rawValue) => {
+    (name, rawValue, formValues = values) => {
       let cleanValue = rawValue
 
       switch (name) {
@@ -91,14 +107,16 @@ export function useFormValidation() {
       }
 
       setValues(prev => ({ ...prev, [name]: cleanValue }))
-      const error = validateField(name, cleanValue)
+      const error = validateField(name, cleanValue, formValues)
       setErrors(prev => ({ ...prev, [name]: error }))
     },
-    [validateField],
+    [validateField, values],
   )
 
   const hasErrors = Object.values(errors).some(error => error !== '')
-  const isEmpty = ['firstname', 'lastname', 'phone'].every(field => !values[field].trim())
+  const isEmpty = ['firstname', 'lastname', 'phone', 'password', 'confirmPassword'].every(
+    field => !values[field].trim(),
+  )
 
   const reset = useCallback(() => {
     setValues({
@@ -106,12 +124,16 @@ export function useFormValidation() {
       lastname: '',
       phone: '',
       email: '',
+      password: '',
+      confirmPassword: '',
     })
     setErrors({
       firstname: '',
       lastname: '',
       phone: '',
       email: '',
+      password: '',
+      confirmPassword: '',
     })
   }, [])
 

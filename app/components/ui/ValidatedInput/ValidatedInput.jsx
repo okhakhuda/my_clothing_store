@@ -10,6 +10,7 @@ export default function ValidatedInput({
   error,
   type = 'text',
   className = '',
+  disabled = false,
   placeholder,
 }) {
   const handleChange = e => {
@@ -36,6 +37,7 @@ export default function ValidatedInput({
         onChange={handleChange}
         placeholder={inputPlaceholder}
         name={name}
+        disabled={disabled}
       />
       {error && <p className={s.errorMessage}>{error}</p>}
     </div>

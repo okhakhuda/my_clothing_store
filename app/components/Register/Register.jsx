@@ -4,146 +4,60 @@ import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
 import { registerThunk } from '../../redux/features/auth/thunks'
 import { useRouter } from 'next/navigation'
+import { useFormValidation } from '../hooks/useFormValidation'
+import ValidatedInput from '../ui/ValidatedInput/ValidatedInput'
 import s from './Register.module.scss'
 
 function Register() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
-  const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
-
   const dispatch = useAppDispatch()
   const authError = useAppSelector(state => state.auth.error)
   const router = useRouter()
 
-  // Регулярні вирази
-  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const PHONE_REGEX = /^(\+380|0)[5-9]\d{8}$/
-  const NAME_REGEX = /^[а-яА-ЯїєґІЇЄҐ'`ʼʼ' ]{2,50}$/
+  const [isLoading, setIsLoading] = useState(false)
+  const [serverError, setServerError] = useState('')
 
-  const validateField = (name, value) => {
-    switch (name) {
-      case 'firstName':
-      case 'lastName':
-        if (!value.trim()) return "Поле обов'язкове"
-        if (value.trim().length < 2) return 'Мінімум 2 символи'
-        if (!NAME_REGEX.test(value)) return 'Тільки кириличні літери'
-        return ''
+  // ✅ Використовуємо хук з параметром isRegister=true
+  const { values, errors, handleChange, hasErrors, reset } = useFormValidation(true)
 
-      case 'phone':
-        if (!value.trim()) return "Телефон обов'язковий"
-        if (!PHONE_REGEX.test(value.replace(/\s/g, ''))) return 'Формат: +380XXXXXXXXX або 0XXXXXXXXX'
-        return ''
-
-      case 'email':
-        if (!value.trim()) return "Email обов'язковий"
-        if (!EMAIL_REGEX.test(value)) return 'Некоректний email'
-        return ''
-
-      case 'password':
-        if (!value) return "Пароль обов'язковий"
-        if (value.length < 6) return 'Мінімум 6 символів'
-        return ''
-
-      case 'confirmPassword':
-        if (!value) return 'Підтвердіть пароль'
-        if (value !== formData.password) return 'Паролі не співпадають'
-        return ''
-
-      default:
-        return ''
-    }
-  }
-
-  const handleChange = e => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-
-    // ✅ Реал-тайм валідація
-    const error = validateField(name, value)
-    setErrors(prev => ({
-      ...prev,
-      [name]: error,
-    }))
-  }
-
-  const handlePhoneChange = e => {
-    let value = e.target.value.replace(/[^\d+]/g, '')
-    const cleanDigits = value.replace(/[^\d]/g, '')
-
-    if (cleanDigits.length > 12) return
-
-    let formatted = ''
-    if (cleanDigits.startsWith('380') && cleanDigits.length <= 12) {
-      formatted = '+380' + cleanDigits.slice(3)
-    } else if (cleanDigits.startsWith('0') && cleanDigits.length <= 10) {
-      formatted = '0' + cleanDigits.slice(1)
-    } else {
-      formatted = value
-    }
-
-    setFormData(prev => ({ ...prev, phone: formatted }))
-    setErrors(prev => ({
-      ...prev,
-      phone: validateField('phone', formatted),
-    }))
-  }
+  // ✅ disabled враховує всі обов'язкові поля + помилки
+  const isFormValid =
+    !hasErrors &&
+    values.firstname &&
+    values.lastname &&
+    values.phone &&
+    values.email &&
+    values.password &&
+    values.confirmPassword &&
+    !isLoading
 
   const handleSubmit = async e => {
     e.preventDefault()
 
-    // ✅ Фінальна валідація всіх полів
-    const newErrors = {}
-    Object.keys(formData).forEach(key => {
-      if (key !== 'confirmPassword') {
-        newErrors[key] = validateField(key, formData[key])
-      }
-    })
-
-    if (Object.values(newErrors).some(error => error)) {
-      setErrors(newErrors)
-      return
-    }
+    if (!isFormValid) return
 
     setIsLoading(true)
+
     try {
-      await dispatch(registerThunk(formData)).unwrap()
+      await dispatch(
+        registerThunk({
+          firstName: values.firstname,
+          lastName: values.lastname,
+          phone: values.phone,
+          email: values.email,
+          password: values.password,
+          // confirmPassword: values.confirmPassword,
+        }),
+      ).unwrap()
       reset()
       router.push('/')
     } catch (error) {
-      setErrors({ ...errors, email: 'Користувач вже існує' })
+      setServerError(error.message || '!!! Користувач з таким email або телефоном вже існує')
+      // Серверна помилка (користувач існує)
+      handleChange('email', values.email) // Перевалідувати для показу помилки
     } finally {
       setIsLoading(false)
     }
   }
-
-  const reset = () => {
-    setFormData({
-      firstName: '',
-      lastName: '',
-      phone: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    })
-    setErrors({})
-  }
-
-  const isFormValid =
-    Object.values(errors).every(error => !error) &&
-    formData.firstName &&
-    formData.lastName &&
-    formData.phone &&
-    formData.email &&
-    formData.password &&
-    formData.confirmPassword &&
-    !isLoading
 
   return (
     <div className={s.registerWrapper}>
@@ -156,112 +70,73 @@ function Register() {
 
           <form className={s.registerForm} onSubmit={handleSubmit}>
             <div className={s.formRow}>
-              <div className={s.formGroup}>
-                <label htmlFor="firstName" className={s.formLabel}>
-                  Ім'я
-                </label>
-                <input
-                  id="firstName"
-                  className={`${s.formInput} ${errors.firstName ? s.formInputError : ''}`}
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="Іван"
-                  maxLength="50"
-                  disabled={isLoading}
-                />
-                {errors.firstName && <p className={s.errorMessage}>{errors.firstName}</p>}
-              </div>
-
-              <div className={s.formGroup}>
-                <label htmlFor="lastName" className={s.formLabel}>
-                  Прізвище
-                </label>
-                <input
-                  id="lastName"
-                  className={`${s.formInput} ${errors.lastName ? s.formInputError : ''}`}
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Петренко"
-                  maxLength="50"
-                  disabled={isLoading}
-                />
-                {errors.lastName && <p className={s.errorMessage}>{errors.lastName}</p>}
-              </div>
-            </div>
-
-            <div className={s.formGroup}>
-              <label htmlFor="phone" className={s.formLabel}>
-                Телефон
-              </label>
-              <input
-                id="phone"
-                className={`${s.formInput} ${errors.phone ? s.formInputError : ''}`}
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handlePhoneChange}
-                placeholder="+380 98 123 45 67"
+              <ValidatedInput
+                name="firstname"
+                label="Ім'я *"
+                value={values.firstname}
+                onChange={value => handleChange('firstname', value)}
+                error={errors.firstname}
                 disabled={isLoading}
+                className={s.formField}
               />
-              {errors.phone && <p className={s.errorMessage}>{errors.phone}</p>}
+
+              <ValidatedInput
+                name="lastname"
+                label="Прізвище *"
+                value={values.lastname}
+                onChange={value => handleChange('lastname', value)}
+                error={errors.lastname}
+                disabled={isLoading}
+                className={s.formField}
+              />
             </div>
 
-            <div className={s.formGroup}>
-              <label htmlFor="email" className={s.formLabel}>
-                Email
-              </label>
-              <input
-                id="email"
-                className={`${s.formInput} ${errors.email ? s.formInputError : ''}`}
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="example@email.com"
-                disabled={isLoading}
-              />
-              {errors.email && <p className={s.errorMessage}>{errors.email}</p>}
-            </div>
+            <ValidatedInput
+              name="phone"
+              type="tel"
+              label="Телефон *"
+              value={values.phone}
+              onChange={value => handleChange('phone', value)}
+              error={errors.phone}
+              disabled={isLoading}
+              className={s.formField}
+            />
+
+            <ValidatedInput
+              name="email"
+              type="email"
+              label="Email *"
+              value={values.email}
+              onChange={value => handleChange('email', value)}
+              error={errors.email}
+              disabled={isLoading}
+              className={s.formField}
+            />
 
             <div className={s.formRow}>
-              <div className={s.formGroup}>
-                <label htmlFor="password" className={s.formLabel}>
-                  Пароль
-                </label>
-                <input
-                  id="password"
-                  className={`${s.formInput} ${errors.password ? s.formInputError : ''}`}
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  disabled={isLoading}
-                />
-                {errors.password && <p className={s.errorMessage}>{errors.password}</p>}
-              </div>
+              <ValidatedInput
+                name="password"
+                type="password"
+                label="Пароль *"
+                value={values.password}
+                onChange={value => handleChange('password', value)}
+                error={errors.password}
+                disabled={isLoading}
+                className={s.formField}
+              />
 
-              <div className={s.formGroup}>
-                <label htmlFor="confirmPassword" className={s.formLabel}>
-                  Підтвердити пароль
-                </label>
-                <input
-                  id="confirmPassword"
-                  className={`${s.formInput} ${errors.confirmPassword ? s.formInputError : ''}`}
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  disabled={isLoading}
-                />
-                {errors.confirmPassword && <p className={s.errorMessage}>{errors.confirmPassword}</p>}
-              </div>
+              <ValidatedInput
+                name="confirmPassword"
+                type="password"
+                label="Підтвердити пароль *"
+                value={values.confirmPassword}
+                onChange={value => handleChange('confirmPassword', value)}
+                error={errors.confirmPassword}
+                disabled={isLoading}
+                className={s.formField}
+              />
             </div>
+            {serverError && <p className={s.serverError}>{serverError}</p>}
 
             <button
               className={`${s.submitButton} ${!isFormValid ? s.submitButtonDisabled : ''}`}
@@ -297,106 +172,3 @@ function Register() {
 }
 
 export default Register
-
-// 'use client'
-
-// import { useState } from 'react'
-// import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
-// import { registerThunk } from '../../redux/features/auth/thunks'
-// import { useRouter } from 'next/navigation'
-// import s from './Register.module.scss'
-
-// function Register() {
-//   const [firstName, setFirstName] = useState('')
-//   const [lastName, setLastName] = useState('')
-//   const [phone, setPhone] = useState('')
-//   const [email, setEmail] = useState('')
-//   const [password, setPassword] = useState('')
-//   const dispatch = useAppDispatch()
-//   const isError = useAppSelector(state => state.auth.error)
-//   const router = useRouter()
-
-//   //   const isAuth = useAppSelector(state => state.auth.isAuth)
-
-//   const handleChange = e => {
-//     const { name, value } = e.target
-//     switch (name) {
-//       case 'firstName':
-//         setFirstName(value)
-//         break
-//       case 'lastName':
-//         setLastName(value)
-//         break
-//       case 'phone':
-//         setPhone(value)
-//         break
-//       case 'email':
-//         setEmail(value)
-//         break
-//       case 'password':
-//         setPassword(value)
-//         break
-//       default:
-//         break
-//     }
-//   }
-
-//   const handleSubmit = e => {
-//     e.preventDefault()
-//     const user = { firstName, lastName, phone, email, password }
-//     dispatch(registerThunk(user)).then(res => {
-//       if (res.error) {
-//         console.log('error', res.error)
-//       } else {
-//         reset()
-//         router.push('/')
-//       }
-//     })
-//   }
-
-//   const reset = () => {
-//     setFirstName('')
-//     setLastName('')
-//     setPhone('')
-//     setEmail('')
-//     setPassword('')
-//   }
-
-//   return (
-//     <>
-//       <h2 className={s.title}>Реєстрація</h2>
-//       <form className={s.form} onSubmit={handleSubmit}>
-//         <label className={s.label}>Ім&#39;я</label>
-//         <input className={s.input} type="text" name="firstName" value={firstName} onChange={handleChange}></input>
-//         <label className={s.label}>Призвіще</label>
-//         <input className={s.input} type="text" name="lastName" value={lastName} onChange={handleChange}></input>
-//         <label className={s.label}>Телефон</label>
-//         <input className={s.input} type="text" name="phone" value={phone} onChange={handleChange}></input>
-//         <label className={s.label}>Email</label>
-//         <input
-//           className={s.input}
-//           type="text"
-//           name="email"
-//           value={email}
-//           placeholder="email"
-//           onChange={handleChange}
-//         ></input>
-//         <label className={s.label}>Password</label>
-//         <input
-//           className={s.input}
-//           type="password"
-//           name="password"
-//           value={password}
-//           placeholder="password"
-//           onChange={handleChange}
-//         ></input>
-
-//         <button className={s.button} type="submit">
-//           Зареєструватися
-//         </button>
-//       </form>
-//     </>
-//   )
-// }
-
-// export default Register
