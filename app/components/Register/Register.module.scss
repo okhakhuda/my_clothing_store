@@ -12,7 +12,6 @@
   align-items: center;
   justify-content: center;
   padding: 32px 16px;
-  background: linear-gradient(135deg, #f6f6f6 0%, #d9d9d9 100%);
 }
 
 .registerContainer {
@@ -30,7 +29,6 @@
 
   @include respond(sm-max) {
     padding: 40px 32px;
-    margin: 16px;
   }
 }
 
@@ -273,12 +271,11 @@
 
 @include respond(sm-max) {
   .registerWrapper {
-    padding: 24px 16px;
+    padding: 24px;
   }
 
   .registerCard {
     padding: 40px 32px;
-    margin: 0 16px;
   }
 
   .registerHeader {

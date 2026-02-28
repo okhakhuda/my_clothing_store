@@ -286,7 +286,7 @@ const DeliverySelection = ({ onDeliverySelected }) => {
           <div className={s.selectionFields}>
             <div className={s.fieldGroup}>
               <label htmlFor="region" className={s.fieldLabel}>
-                Область
+                Область *
               </label>
               <div className={s.selectWrapper}>
                 <select
@@ -309,7 +309,7 @@ const DeliverySelection = ({ onDeliverySelected }) => {
 
             <div className={s.fieldGroup}>
               <label htmlFor="city" className={s.fieldLabel}>
-                Місто
+                Місто *
               </label>
               <div className={s.selectWrapper}>
                 <select
@@ -332,7 +332,7 @@ const DeliverySelection = ({ onDeliverySelected }) => {
 
             <div className={s.fieldGroup}>
               <label htmlFor="department" className={s.fieldLabel}>
-                Відділення
+                Відділення *
               </label>
               <div className={s.selectWrapper}>
                 <select

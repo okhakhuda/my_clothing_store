@@ -59,7 +59,9 @@
   border-radius: 50px;
   padding: 4px;
   background: linear-gradient(#f4f4f4, #9b6f50, #ff751d);
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   mask-composite: exclude;
 }
 

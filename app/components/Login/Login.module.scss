@@ -1,18 +1,9 @@
 @import '../../sass-partial/mixins';
 
-@include respond(sm-max) {
-  .loginWrapper {
-    padding: 16px;
-  }
-}
-
 .loginWrapper {
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 16px;
-  background: linear-gradient(135deg, #f6f6f6 0%, #d9d9d9 100%);
 }
 
 .loginContainer {
@@ -29,8 +20,7 @@
   backdrop-filter: blur(20px);
 
   @include respond(sm-max) {
-    padding: 32px 24px;
-    margin: 16px;
+    padding: 32px 40px;
   }
 }
 
@@ -235,12 +225,11 @@
 
 @include respond(sm-max) {
   .loginWrapper {
-    padding: 24px 16px;
+    padding: 24px;
   }
 
   .loginCard {
-    padding: 32px 24px;
-    margin: 0 16px;
+    padding: 16px;
   }
 
   .loginFooter {

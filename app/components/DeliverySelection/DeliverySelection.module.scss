@@ -1,15 +1,8 @@
 @import '../../sass-partial/mixins';
 
-@include respond(sm-max) {
-  .deliveryWrapper {
-    padding: 16px;
-  }
-}
-
 .deliveryWrapper {
   max-width: 600px;
   margin: 0 auto;
-  padding: 32px 16px;
 
   @include respond(xl-min) {
     padding: 40px 32px;
@@ -20,7 +13,7 @@
   background: #fff;
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   border: 1px solid #e5e7eb;
 
   @include respond(sm-max) {
@@ -70,7 +63,7 @@
   opacity: 0;
   width: 0;
   height: 0;
-  
+
   &:checked + .providerLabel {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     border-color: #3b82f6;
@@ -83,7 +76,7 @@
     }
 
     .providerDesc {
-      color: rgba(255,255,255,0.9);
+      color: rgba(255, 255, 255, 0.9);
     }
 
     .providerIcon {
@@ -108,7 +101,7 @@
     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
     border-color: #cbd5e1;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
   }
 
   @include respond(md-max) {
@@ -179,8 +172,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingText {
@@ -332,7 +329,7 @@
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .providerOption {
     min-width: unset;
   }
@@ -346,10 +343,8 @@
   .selectionFields {
     gap: 20px;
   }
-  
+
   .providerLabel {
     padding: 16px 20px;
   }
 }
-
-
