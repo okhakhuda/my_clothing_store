@@ -52,5 +52,5 @@
 }
 
 %BackgroundGradient {
-  background: linear-gradient(var(--accent-color), var(--secondary-color));
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--secondary-color) 100%);
 }

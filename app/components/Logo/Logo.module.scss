@@ -7,7 +7,7 @@
   cursor: pointer;
   text-decoration: none;
   overflow: hidden;
-  transition: color var(--main-transition);
+  transition: transform var(--main-transition);
 
   span {
     font-style: italic;
@@ -16,5 +16,5 @@
 
 .logo:hover,
 .logo:focus {
-  color: var(--accent-color);
+  transform: scale(1.05);
 }

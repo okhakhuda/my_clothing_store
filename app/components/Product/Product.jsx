@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
 import { ButtonBasket } from '../utils/ButtonBasket/ButtonBasket'
 
 const Product = ({ productId }) => {
-
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -16,7 +15,7 @@ const Product = ({ productId }) => {
   }, [dispatch, productId])
 
   const product = useAppSelector(state => state.productById.items)
-  
+
   const [dataProduct, setDataProduct] = useState({})
 
   const [size, setSize] = useState('')

@@ -25,7 +25,7 @@ const UA_OPERATORS = [
 ]
 
 const PHONE_REGEX = /^(\+380|0)[5-9]\d{8}$/
-const NAME_REGEX = /^[а-яА-ЯїєґІЇЄҐ'`ʼʼ' ]{2,50}$/
+const NAME_REGEX = /^[а-яА-ЯіїєґІЇЄҐ'`ʼʼ' ]{2,50}$/
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/
 const EMAIL_REGEX = /^[^\s@]+@[^@\s]+(\.[^@\s]+)+$/
 

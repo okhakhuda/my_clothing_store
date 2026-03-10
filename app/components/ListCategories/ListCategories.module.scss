@@ -1,23 +1,22 @@
 @import '../../sass-partial/mixins';
 
 .categoriesNav {
-  padding: 40px 24px;
+  padding: 20px 14px;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   border: 1px solid #f1f5f9;
-  margin-bottom: 48px;
   overflow: auto;
 
   @include respond(sm-max) {
-    padding: 32px 20px;
-    margin-bottom: 32px;
+    // padding: 32px 20px;
+    // margin-bottom: 5px;
   }
 }
 
 .categoriesList {
   display: flex;
-  // flex-wrap: nowrap;
+  flex-wrap: nowrap;
   gap: 8px;
   list-style: none;
   padding: 0;
@@ -39,7 +38,7 @@
 .categoryItem {
   flex: 0 0 auto;
   width: auto;
-  height: 120px;
+  // height: 120px;
 }
 
 .activeCategory {
@@ -115,6 +114,8 @@
   object-fit: cover;
   border-radius: 6px;
   transition: transform 0.3s ease;
+  width: 60px;
+  height: 80px;
 
   .categoryLink:hover:focus & {
     transform: scale(1.1);

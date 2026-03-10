@@ -1,5 +1,4 @@
 .card {
-  margin-top: 7px;
   margin-bottom: 15px;
 }
 
@@ -93,7 +92,10 @@
   height: 22px;
   font-size: 12px;
   cursor: pointer;
-  transition: background-color var(--main-transition), border-color var(--main-transition), color var(--main-transition);
+  transition:
+    background-color var(--main-transition),
+    border-color var(--main-transition),
+    color var(--main-transition);
 }
 
 .size_label:hover {

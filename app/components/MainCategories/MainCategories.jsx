@@ -5,7 +5,6 @@ import Link from 'next/link'
 import s from './MainCategories.module.scss'
 import { useAppSelector, useAppDispatch } from '../../redux/hooks'
 import Loader from '../Loader/Loader'
-import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { fetchMainCategoryThunk } from '../../redux/features/mainCategories/thunks'
 
@@ -19,18 +18,6 @@ const MainCategories = () => {
       dispatch(fetchMainCategoryThunk())
     }
   }, [dispatch, items])
-
-  // const isLoading = useAppSelector(state => state.mainCategory.isLoading)
-
-  // Expected server HTML to contain a matching <div> in <div>. Error Component Stack
-
-  // const [mounted, setMounted] = useState(false)
-
-  // useEffect(() => {
-  //   setMounted(true)
-  // }, [])
-
-  // if (!mounted) return null
 
   return (
     <section className={s.main_categories}>

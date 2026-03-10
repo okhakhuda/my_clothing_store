@@ -19,19 +19,13 @@ const cartSlice = createSlice({
         state.message = 'Товар успішно додано до кошика'
       } else {
         state.items.push({ ...action.payload, quantity: 1 })
-
         state.message = 'Товар успішно додано до кошика'
       }
     },
-    removeFromCart: (state, action) => { 
+    removeFromCart: (state, action) => {
       state.items = state.items.filter(
-        item =>
-      !(
-        item.productId === action.payload.productId &&
-        item.size === action.payload.size
+        item => !(item.productId === action.payload.productId && item.size === action.payload.size),
       )
-  )
-
       state.message = 'Товар успішно видалено з кошика'
     },
     clearCart: state => {
@@ -46,7 +40,7 @@ const cartSlice = createSlice({
       const item = state.items.find(
         item => item.productId === action.payload.productId && item.size === action.payload.size,
       )
-      if (item) { 
+      if (item) {
         item.quantity += 1
       }
     },
@@ -60,6 +54,9 @@ const cartSlice = createSlice({
         state.items = state.items.filter(item => item.size !== action.payload.size)
       }
     },
+    clearCart: state => {
+      state.items = []
+    },
     clearCartMessage: state => {
       state.message = null
       state.error = null
@@ -67,12 +64,6 @@ const cartSlice = createSlice({
   },
 })
 
-export const {
-  addToCart,
-  removeFromCart,
-  clearCart,
-  incrementQuantity,
-  decrementQuantity,
-  clearCartMessage,
-} = cartSlice.actions
+export const { addToCart, removeFromCart, clearCart, incrementQuantity, decrementQuantity, clearCartMessage } =
+  cartSlice.actions
 export const cartReducer = cartSlice.reducer

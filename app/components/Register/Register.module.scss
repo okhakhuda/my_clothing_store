@@ -63,7 +63,6 @@
 }
 
 .formRow {
-  display: flex;
   gap: 24px;
 
   @include respond(xl-min) {

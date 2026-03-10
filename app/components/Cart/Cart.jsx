@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
-import { incrementQuantity, decrementQuantity, removeFromCart } from '@/app/redux/features/cart/slices'
+import { incrementQuantity, decrementQuantity, removeFromCart, clearCart } from '@/app/redux/features/cart/slices'
 import { createOrderThunk } from '@/app/redux/features/order/thunks'
 import { GiShoppingCart } from 'react-icons/gi'
 import { useModalConfirm } from '../../components/hooks/useModalConfirm'
@@ -12,10 +12,12 @@ import { ModalConfirm } from '../../components/utils/ModalConfirmation/ModalConf
 import DeliverySelection from '../../components/DeliverySelection/DeliverySelection'
 import ValidatedInput from '../../components/ui/ValidatedInput/ValidatedInput'
 import { useFormValidation } from '../../components/hooks/useFormValidation'
+import { useRouter } from 'next/navigation'
 import s from './Cart.module.scss'
 
 export default function Cart() {
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const cart = useAppSelector(state => state.cart.items)
   const user = useAppSelector(state => state.auth.user)
 
@@ -109,7 +111,16 @@ export default function Cart() {
       return
     }
 
-    dispatch(createOrderThunk({ ...order, userId: user?.id }))
+    dispatch(createOrderThunk({ ...order, userId: user?.id })).then(order => {
+      console.log(order)
+
+      if (!order) {
+        setConfirmMessage('Помилка при створенні замовлення. Спробуйте ще раз.')
+      } else {
+        router.push(`./order/${order.payload.order.orderNumber}`)
+        dispatch(clearCart())
+      }
+    })
   }
 
   if (cart.length === 0) {

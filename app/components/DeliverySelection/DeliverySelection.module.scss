@@ -281,6 +281,10 @@
   }
 }
 
+.selectField option {
+  max-width: 100vw;
+}
+
 .selectField:disabled {
   background: #f9fafb;
   color: #9ca3af;

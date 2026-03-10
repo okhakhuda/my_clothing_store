@@ -14,7 +14,7 @@ const useModalStatus = () => {
       const timer = setTimeout(() => {
         setIsOpen(false)
         dispatch(clearMessage())
-      }, 3000)
+      }, 3000) // Закриваємо через 3 секунд
 
       return () => clearTimeout(timer)
     }
