@@ -1,3 +1,22 @@
+@import '../../sass-partial/mixins';
+
+.error_message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 40px;
+  color: #e53e3e;
+  font-size: 20px;
+  font-weight: 600;
+
+  @include respond(sm-max) {
+    padding: 60px 20px;
+    font-size: 18px;
+  }
+}
+
 .card {
   margin-bottom: 15px;
 }

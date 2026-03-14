@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CiMenuFries } from 'react-icons/ci'
 import { AiOutlineClose } from 'react-icons/ai'
 import { FaUser, FaShoppingCart, FaHeart, FaBox, FaPhone, FaEnvelope, FaQuestionCircle } from 'react-icons/fa'

@@ -9,6 +9,7 @@ import s from './ListCategories.module.scss'
 import { MdCategory } from 'react-icons/md'
 import { useParams } from 'next/navigation'
 import allimage from '../../../public/all.jpg'
+import Loader from '../Loader/Loader'
 
 const ListCategories = ({ mainSlug }) => {
   const { items, loading, error } = useAppSelector(state => state.categoryByMainSlug)
@@ -27,6 +28,10 @@ const ListCategories = ({ mainSlug }) => {
     () => [{ id: 'all', slug: `/${mainSlug}/all`, title: 'ВСЕ', image: allimage }, ...items],
     [items, mainSlug],
   )
+
+  if (loading) {
+    return <Loader />
+  }
 
   if (error) {
     return (
@@ -49,7 +54,9 @@ const ListCategories = ({ mainSlug }) => {
         {allCategories.map(category => (
           <li
             key={category.id}
-            className={`${s.categoryItem} ${category.slug.includes(params.categorySlug) ? s.activeCategory : ''}`}
+            className={`${s.categoryItem} ${
+              category.slug.includes(params.categorySlug) || params.categorySlug === undefined ? s.activeCategory : ''
+            }`}
           >
             <Link
               href={category.slug}

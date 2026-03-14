@@ -8,7 +8,8 @@ import { fetchProductsByMainCatThunk } from '../../redux/features/products/thunk
 import { fetchProductsByCatThunk } from '../../redux/features/products/thunks'
 import s from './ListProducts.module.scss'
 import { MdInventory2 } from 'react-icons/md'
-import ProductSkeleton from './ProductSkeleton' // ✅ Додано Skeleton
+
+import Loader from '../Loader/Loader'
 
 const ListProducts = ({ mainSlug, categorySlug }) => {
   const productsByCat = useAppSelector(state => state.productsByCat.items)
@@ -46,6 +47,10 @@ const ListProducts = ({ mainSlug, categorySlug }) => {
     return products.slice(0, 24)
   }, [products])
 
+  if (isLoading) {
+    return <Loader />
+  }
+
   if (isError) {
     return (
       <section className={s.errorSection} aria-label="Помилка завантаження товарів">
@@ -70,17 +75,20 @@ const ListProducts = ({ mainSlug, categorySlug }) => {
     )
   }
 
+  if (!isLoading && !hasProducts) {
+    return (
+      <div className={s.emptyState}>
+        <MdInventory2 className={s.emptyIcon} />
+        <h3 className={s.emptyTitle}>Покищо товарів немає!</h3>
+        <p className={s.emptyText}>Додамо найближчим часом</p>
+      </div>
+    )
+  }
+
   return (
     <section className={s.productsSection} aria-label="Список товарів">
       <div className={s.productsGrid}>
-        {isLoading ? (
-          // ✅ 8 Skeleton компонентів під час завантаження
-          Array.from({ length: 8 }, (_, index) => (
-            <article key={`skeleton-${index}`} className={s.skeletonItem}>
-              <ProductSkeleton />
-            </article>
-          ))
-        ) : hasProducts ? (
+        {hasProducts &&
           visibleProducts.map((product, index) => (
             <article key={product.id} className={s.productCard}>
               <Link
@@ -110,14 +118,7 @@ const ListProducts = ({ mainSlug, categorySlug }) => {
                 </div>
               </Link>
             </article>
-          ))
-        ) : (
-          <div className={s.emptyState}>
-            <MdInventory2 className={s.emptyIcon} />
-            <h3 className={s.emptyTitle}>Покищо товарів немає!</h3>
-            <p className={s.emptyText}>Додамо найближчим часом</p>
-          </div>
-        )}
+          ))}
       </div>
 
       {hasProducts && products.length > 24 && (
