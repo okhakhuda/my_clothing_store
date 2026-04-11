@@ -15,8 +15,6 @@ import { useState } from 'react'
 const Header = () => {
   const [letter, setLetter] = useState('')
 
-  // console.log('letter', letter)
-
   const avatar = useAppSelector(state => state.auth.user?.avatarUrl)
   const user = useAppSelector(state => state.auth.user)
 
@@ -32,7 +30,7 @@ const Header = () => {
     <header className={s.header}>
       <div className={s.left_side}>
         <Sidebar />
-        <Search />
+        {/* <Search /> */}
       </div>
       <Logo />
       <div className={s.right_side}>

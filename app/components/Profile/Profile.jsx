@@ -1,71 +1,141 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
 import { fetchOrderByUserThunk } from '@/app/redux/features/order/thunks'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import s from './Profile.module.scss'
 
 const Profile = () => {
+  const [activeTab, setActiveTab] = useState('info')
+
   const user = useAppSelector(state => state.auth.user)
   const isAuth = useAppSelector(state => state.auth.isAuth)
   const orders = useAppSelector(state => state.orderByUser.items)
-  console.log('orders', orders)
 
   const dispatch = useAppDispatch()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuth && !user?.id) {
+    if (!isAuth || !user?.id) {
       return router.push('/login')
     }
     dispatch(fetchOrderByUserThunk(user.id))
   }, [dispatch, isAuth, router, user])
 
-  return (
-    <div>
-      <h1>Мій профіль</h1>
-      {user.avatar && (
-        <div>
-          <Image src={user.avatar} alt={user.firstName} width={100} height={100} />
-        </div>
-      )}
-      <h2>Ім&#39;я: {user.firstName}</h2>
-      <h2>Призвище: {user.lastName}</h2>
-      <h2>Електронна пошта: {user.email}</h2>
-      <h2>Телефон: {user.phone}</h2>
+  if (!isAuth || !user) return null
 
-      {orders.length > 0 &&
-        orders.map(order => (
-          <ul key={order.id}>
-            <li>
-              <div className="card-body">
-                <h2 className="card-title">Замовлення № {order.orderNumber}</h2>
-                <p>Дата замовлення: {order.createdAt}</p>
-                {order.products.map(product => (
-                  <ul key={product.id} className="card_products">
-                    <li className="card-body">
-                      <Image src={product.image} alt={product.name} width={100} height={100} className="rounded-xl" />
-                      <h2 className="card-title">{product.name}</h2>
-                      <p>Розмір: {product.size}</p>
-                      <p>Колір: {product.color}</p>
-                      <p>Артикул: {product.article}</p>
-                      <p>Кількість: {product.quantity}</p>
-                      <p>Ціна: {product.price} грн.</p>
-                    </li>
-                  </ul>
-                ))}
-                <h2>Адреса</h2>
-                <p>Спосіб доставки: {order.address.provider}</p>
-                <p>Область: {order.address.region}</p>
-                <p>Місто: {order.address.city}</p>
-                <p>Відділення: {order.address.department}</p>
+  return (
+    <section className={s.profile}>
+      <div className={s.container}>
+        <h1 className={s.title}>Мій профіль</h1>
+
+        <div className={s.tabs}>
+          <button
+            type="button"
+            className={activeTab === 'info' ? s.tabActive : s.tab}
+            onClick={() => setActiveTab('info')}
+          >
+            Особиста інформація
+          </button>
+          <button
+            type="button"
+            className={activeTab === 'orders' ? s.tabActive : s.tab}
+            onClick={() => setActiveTab('orders')}
+          >
+            Замовлення ({orders.length})
+          </button>
+        </div>
+
+        <div className={s.content}>
+          {activeTab === 'info' && (
+            <div className={s.infoSection}>
+              <div className={s.avatarWrapper}>
+                {user.avatar ? (
+                  <Image src={user.avatar} alt={user.firstName} width={120} height={120} className={s.avatar} />
+                ) : (
+                  <div className={s.avatarPlaceholder}>
+                    {user.firstName[0]}
+                    {user.lastName[0]}
+                  </div>
+                )}
               </div>
-            </li>
-            <p>Загальна ціна: {order.totalPrice} грн.</p>
-          </ul>
-        ))}
-    </div>
+              <div className={s.infoGrid}>
+                <div className={s.infoItem}>
+                  <span className={s.label}>Ім’я</span>
+                  <span>{user.firstName}</span>
+                </div>
+                <div className={s.infoItem}>
+                  <span className={s.label}>Прізвище</span>
+                  <span>{user.lastName}</span>
+                </div>
+                <div className={s.infoItem}>
+                  <span className={s.label}>Електронна пошта</span>
+                  <span>{user.email}</span>
+                </div>
+                <div className={s.infoItem}>
+                  <span className={s.label}>Телефон</span>
+                  <span>{user.phone}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className={s.ordersSection}>
+              {orders.length === 0 ? (
+                <div className={s.empty}>
+                  <p>У вас ще немає замовлень.</p>
+                </div>
+              ) : (
+                <ul className={s.orderList}>
+                  {orders.map(order => (
+                    <li key={order.id} className={s.orderCard}>
+                      <div className={s.orderHeader}>
+                        <h3>Замовлення № {order.orderNumber}</h3>
+                        <span className={s.date}>{order.createdAt}</span>
+                      </div>
+
+                      <div className={s.products}>
+                        {order.products.slice(0, 3).map(product => (
+                          <div key={product.id} className={s.product}>
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              width={60}
+                              height={60}
+                              className={s.productImage}
+                            />
+                            <div className={s.productInfo}>
+                              <h4>{product.name}</h4>
+                              <p>
+                                {product.size}, {product.color}
+                              </p>
+                              <p>Кількість: {product.quantity}</p>
+                            </div>
+                          </div>
+                        ))}
+                        {order.products.length > 3 && (
+                          <div className={s.more}>+ {order.products.length - 3} товарів</div>
+                        )}
+                      </div>
+
+                      <div className={s.orderFooter}>
+                        <span className={s.address}>
+                          {order.address.city}, {order.address.department}
+                        </span>
+                        <span className={s.total}>{order.totalPrice} грн.</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   )
 }
 
