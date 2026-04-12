@@ -1,42 +1,93 @@
-// .modal_overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
+.main {
+  padding: 16px 10px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
 
-//   width: 100%;
-//   height: 100%;
-//   background-color: rgba(0, 0, 0, 0.2);
-//   opacity: 1;
-//   overflow-y: scroll;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
-//   &.is-hidden {
-//     visibility: hidden;
-//     opacity: 0;
-//     pointer-events: none;
-//   }
-// }
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
 
-// .modal {
-//   position: absolute;
-//   left: 50%;
-//   top: 50%;
-//   transform: translate(-50%, -50%);
-//   width: 300px;
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: none;
+  background-color: #0366d6;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s ease;
+}
 
-//   background-color: #ffffff;
-//   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.2);
-//   border-radius: 4px;
-//   visibility: visible;
+.addButton:hover {
+  background-color: #0255b3;
+}
 
-//   padding-top: 20px;
-//   padding-left: 20px;
-//   padding-right: 20px;
-//   padding-bottom: 20px;
-//   z-index: 200;
+.addIcon {
+  font-size: 16px;
+}
 
-//   &.is-hidden {
-//     visibility: hidden;
-//     opacity: 0;
-//     pointer-events: none;
-//   }
-// }
+.tableWrapper {
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  background-color: #f3f4f6;
+  font-size: 13px;
+}
+
+.image {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.actionButton {
+  border: none;
+  background-color: transparent;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #7c3aed;
+  transition: color 0.2s ease;
+}
+
+.actionButton:hover {
+  color: #5b21b6;
+}
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 12px;
+  }
+
+  .table th,
+  .table td {
+    padding: 4px 6px;
+  }
+}

@@ -1,55 +1,59 @@
 'use client'
 
 import React from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
-import s from './layout.module.scss'
 import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
 import { useAppSelector } from '@/app/redux/hooks'
+import s from './layout.module.scss'
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname()
   const router = useRouter()
-  const isAuthAdmim = useAppSelector(state => state.auth.user?.role)
+  const role = useAppSelector(state => state.auth.user?.role)
+
+  // Перевіряємо, чи є користувач адміном
+  useEffect(() => {
+    if (role !== 'administrator') {
+      router.push('/login')
+    }
+  }, [role, router])
+
+  if (role !== 'administrator') return null
+
+  // Визначення активного лінку
   const isActive = path => {
     return pathname === path ? s.active : ''
   }
-  const isActiveOrders = isActive('/dashboard/orders')
-  const isActiveProducts = isActive('/dashboard/products')
-  const isActiveMainCategories = isActive('/dashboard/mainCategories')
-  const isActiveCategories = isActive('/dashboard/categories')
-
-  if (isAuthAdmim !== 'administrator') {
-    return router.push('/login')
-  }
 
   return (
-    <div className="dashboard">
-      <div className="dashboard-layout__sidebar">
-        <ul>
+    <div className={s.dashboard}>
+      <nav className={s.sidebar}>
+        <ul className={s.menu}>
           <li>
-            <Link href="/dashboard/orders" className={isActiveOrders}>
+            <Link href="/dashboard/orders" className={isActive('/dashboard/orders')}>
               Orders
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/products" className={isActiveProducts}>
+            <Link href="/dashboard/products" className={isActive('/dashboard/products')}>
               Products
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/mainCategories" className={isActiveMainCategories}>
+            <Link href="/dashboard/mainCategories" className={isActive('/dashboard/mainCategories')}>
               Головні категорії
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/categories" className={isActiveCategories}>
+            <Link href="/dashboard/categories" className={isActive('/dashboard/categories')}>
               Categories
             </Link>
           </li>
         </ul>
-      </div>
-      <div className="dashboard-layout__content">{children}</div>
+      </nav>
+      <main className={s.content}>{children}</main>
     </div>
   )
 }

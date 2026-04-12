@@ -1,3 +1,65 @@
-.active {
-  color: aqua;
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  padding: 10px;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.sidebar {
+  width: 180px;
+  flex-shrink: 0;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  padding: 10px 6px;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  margin-bottom: 4px;
+}
+
+.menu li a {
+  display: block;
+  padding: 8px 10px;
+  text-decoration: none;
+  color: #1f2937;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: background-color 0.2s ease;
+}
+
+.menu li a.active {
+  background-color: #0366d6;
+  color: #fff;
+}
+
+.menu li a:hover {
+  background-color: #e5e7eb;
+}
+
+.content {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* адаптив: мобілка → меню згортається */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    padding: 6px;
+  }
+
+  .sidebar {
+    width: auto;
+    margin-bottom: 10px;
+  }
 }
