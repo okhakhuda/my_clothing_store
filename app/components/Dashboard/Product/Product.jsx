@@ -7,12 +7,8 @@ import { RiDeleteBin2Line } from 'react-icons/ri'
 import { IoAddCircleOutline } from 'react-icons/io5'
 import { RxUpdate } from 'react-icons/rx'
 import Image from 'next/image'
-<<<<<<< HEAD
 import Link from 'next/link'
-import Loader from '@/app/components/Loader/Loader'
-=======
 import Loader from '../../Loader/Loader'
->>>>>>> 4f9933e342ec0b570c50ccf30c6f0495c8d0af30
 import { ModalProduct } from '../../utils/ModalProduct/ModalProduct'
 import { ModalConfirm } from '../../utils/ModalConfirmation/ModalConfirm'
 import { useModalConfirm } from '../../hooks/useModalConfirm'
