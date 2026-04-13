@@ -7,6 +7,7 @@ import { RiDeleteBin2Line } from 'react-icons/ri'
 import { IoAddCircleOutline } from 'react-icons/io5'
 import { RxUpdate } from 'react-icons/rx'
 import Image from 'next/image'
+import Link from 'next/link'
 import Loader from '@/app/components/Loader/Loader'
 import { ModalProduct } from '../../utils/ModalProduct/ModalProduct'
 import { ModalConfirm } from '../../utils/ModalConfirmation/ModalConfirm'
@@ -113,13 +114,18 @@ export const Product = () => {
               {products.map(product => (
                 <tr key={product.id}>
                   <th scope="row">
-                    <Image
-                      src={product.image?.[0]?.url || '/placeholder.svg'}
-                      alt="product"
-                      width={20}
-                      height={20}
-                      className={s.image}
-                    />
+                    <Link
+                      href={`../../${product.genderCategory?.slug}/${product.category?.slug}/${product.id}`}
+                      key={product.id}
+                    >
+                      <Image
+                        src={product.image?.[0]?.url || '/placeholder.svg'}
+                        alt="product"
+                        width={20}
+                        height={20}
+                        className={s.image}
+                      />
+                    </Link>
                   </th>
                   <td>{product.name}</td>
                   <td>{product.price}</td>

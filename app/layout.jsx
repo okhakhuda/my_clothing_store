@@ -39,7 +39,6 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
-
   return (
     <html lang="uk" className={`${inter.variable} ${amaranth.variable} ${philosopher.variable}`}>
       <Head>

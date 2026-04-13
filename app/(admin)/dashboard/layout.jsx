@@ -33,22 +33,22 @@ export default function DashboardLayout({ children }) {
         <ul className={s.menu}>
           <li>
             <Link href="/dashboard/orders" className={isActive('/dashboard/orders')}>
-              Orders
+              Замовлення
             </Link>
           </li>
           <li>
             <Link href="/dashboard/products" className={isActive('/dashboard/products')}>
-              Products
+              Продукти
+            </Link>
+          </li>
+          <li>
+            <Link href="/dashboard/categories" className={isActive('/dashboard/categories')}>
+              Категорії
             </Link>
           </li>
           <li>
             <Link href="/dashboard/mainCategories" className={isActive('/dashboard/mainCategories')}>
               Головні категорії
-            </Link>
-          </li>
-          <li>
-            <Link href="/dashboard/categories" className={isActive('/dashboard/categories')}>
-              Categories
             </Link>
           </li>
         </ul>
