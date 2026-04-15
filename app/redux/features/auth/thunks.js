@@ -30,14 +30,16 @@ export const currentThunk = createAsyncThunk('user/current', async (token, { rej
   try {
     const data = await axios.get('/api/auth/current', {
       headers: {
+        Accept: 'application/json',
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     })
-    // console.log(data.data)
+    // console.log('currentThunk', data)
 
     return data.data
   } catch (error) {
-    rejectWithValue({ error: error.message })
+    return rejectWithValue(error.response.data.message)
   }
 })
 

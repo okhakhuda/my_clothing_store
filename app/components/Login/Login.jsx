@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useAppDispatch } from '@/app/redux/hooks'
+import { useState, useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
 import { loginThunk } from '../../redux/features/auth/thunks'
 import { useRouter } from 'next/navigation'
 import ValidatedInput from '../ui/ValidatedInput/ValidatedInput'
@@ -14,6 +14,14 @@ function Login() {
 
   const dispatch = useAppDispatch()
   const router = useRouter()
+
+  const token = useAppSelector(state => state.auth.token)
+
+  useEffect(() => {
+    if (token) {5
+      router.push('/')
+    }
+  }, [router, token])
 
   // ✅ Використовуємо хук з параметром isRegister=true
   const { values, errors, handleChange, hasErrors, reset } = useFormValidation(true)

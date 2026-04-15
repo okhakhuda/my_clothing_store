@@ -48,9 +48,9 @@ const authSlice = createSlice({
       .addCase(currentThunk.fulfilled, (state, action) => {
         if (action.payload === undefined) {
           state.isLoading = false
-          state.isAuth = false
           state.user = { firstName: '', lastName: '', phone: '', email: '', avatarUrl: '', role: '', id: '' }
           state.token = ''
+          state.isAuth = false
         }
         state.isLoading = false
         state.isAuth = true
@@ -58,7 +58,7 @@ const authSlice = createSlice({
       })
       .addCase(currentThunk.rejected, (state, action) => {
         state.isLoading = false
-        state.error = action.payload?.error
+        state.error = action.payload?.error?.response?.data?.message
         state.user = { firstName: '', lastName: '', phone: '', email: '', avatarUrl: '', role: '', id: '' }
         state.token = ''
         state.isAuth = false

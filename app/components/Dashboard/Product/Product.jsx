@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
-import { addProductThunk, updateProductThunk, removeProductThunk } from '@/app/redux/features/products/thunks'
+import {
+  addProductThunk,
+  updateProductThunk,
+  removeProductThunk,
+  fetchProductsThunk,
+} from '@/app/redux/features/products/thunks'
 import { RiDeleteBin2Line } from 'react-icons/ri'
 import { IoAddCircleOutline } from 'react-icons/io5'
 import { RxUpdate } from 'react-icons/rx'
@@ -29,6 +34,10 @@ export const Product = () => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen)
   }
+
+  useEffect(() => {
+    dispatch(fetchProductsThunk())
+  }, [dispatch])
 
   const handleAddProduct = () => {
     setIsEditing(false)

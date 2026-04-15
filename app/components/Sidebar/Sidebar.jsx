@@ -15,7 +15,10 @@ const Sidebar = () => {
   const [toggle, setToggle] = useState(false)
   const mainCategories = useAppSelector(state => state.mainCategory.items)
   const isAuth = useAppSelector(state => state.auth.isAuth)
+  // console.log(isAuth)
   const isAuthAdmin = useAppSelector(state => state.auth.user?.role)
+  // console.log(isAuthAdmin)
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {

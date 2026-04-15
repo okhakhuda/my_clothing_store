@@ -2,25 +2,39 @@
 
 import React from 'react'
 import { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
+import { currentThunk } from '@/app/redux/features/auth/thunks'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
-import { useAppSelector } from '@/app/redux/hooks'
 import s from './layout.module.scss'
 
 export default function DashboardLayout({ children }) {
+  const dispatch = useAppDispatch()
+  const token = useAppSelector(state => state.auth.token)
+
   const pathname = usePathname()
   const router = useRouter()
   const role = useAppSelector(state => state.auth.user?.role)
 
-  // Перевіряємо, чи є користувач адміном
   useEffect(() => {
-    if (role !== 'administrator') {
-      router.push('/login')
+    if (token) {
+      dispatch(currentThunk(token)).then(data => {
+        if (data.payload?.data?.role !== 'administrator') {
+          router.push('/login')
+        }
+      })
     }
-  }, [role, router])
+  }, [dispatch, role, router, token])
 
-  if (role !== 'administrator') return null
+  // Перевіряємо, чи є користувач адміном
+  // useEffect(() => {
+  //   if (role !== 'administrator') {
+  //     router.push('/login')
+  //   }
+  // }, [role, router])
+
+  // if (role !== 'administrator') return null
 
   // Визначення активного лінку
   const isActive = path => {
