@@ -147,24 +147,14 @@ export const ModalProduct = ({ isOpen, onClose, onSubmit, productData = {}, isEd
       formDataToSend.append('quantity', formData.quantity || '')
       formDataToSend.append('color', formData.color || '')
       formDataToSend.append('price', formData.price || '')
-      formDataToSend
-        .append(
-          'description',
-          formData.description || '',
-        )(
-          // Додаємо розміри
-          formData.sizeList || [],
-        )
-        .forEach(size => {
-          formDataToSend.append('sizeList', size)
-        })(
-          // Додаємо нові зображення
-          formData.newImage || [],
-        )
-        .forEach(image => {
-          formDataToSend.append('image', image)
-        })
 
+      formDataToSend.append('description', formData.description)
+      for (const key of Object.keys(formData.newImage)) {
+        formDataToSend.append('image', formData.newImage[key])
+      }
+      for (const size of formData.sizeList) {
+        formDataToSend.append('sizeList', size)
+      }
       onSubmit(formData.id, formDataToSend)
       onClose()
     },
