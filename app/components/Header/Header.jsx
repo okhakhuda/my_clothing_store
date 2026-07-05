@@ -16,15 +16,16 @@ const Header = () => {
   const [letter, setLetter] = useState('')
 
   const avatar = useAppSelector(state => state.auth.user?.avatarUrl)
-  const user = useAppSelector(state => state.auth.user)
+  const firstName = useAppSelector(state => state.auth.user?.firstName)
+  const lastName = useAppSelector(state => state.auth.user?.lastName)
 
   useEffect(() => {
-    if (avatar === '') {
-      const firstLetter = user.firstName.charAt(0).toUpperCase()
-      const lastLetter = user.lastName.charAt(0).toUpperCase()
+    if (!avatar) {
+      const firstLetter = firstName?.charAt(0).toUpperCase() ?? ''
+      const lastLetter = lastName?.charAt(0).toUpperCase() ?? ''
       setLetter(`${firstLetter}${lastLetter}`)
     }
-  }, [avatar, user?.firstName, user?.lastName])
+  }, [avatar, firstName, lastName])
 
   return (
     <header className={s.header}>

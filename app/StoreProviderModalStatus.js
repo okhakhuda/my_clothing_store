@@ -2,7 +2,6 @@
 
 import { useState, useEffect, createContext, useContext, useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from './redux/hooks'
-import { clearProductMessage } from './redux/features/products/thunks'
 import { ModalStatus } from './components/utils/ModalStatus/ModalStatus'
 import { clearCartMessage } from './redux/features/cart/slices'
 
@@ -12,8 +11,6 @@ const ModalContext = createContext()
 export const useModalStatus = () => useContext(ModalContext)
 
 export const StoreProviderModalStatus = ({ children }) => {
-  // const message = useAppSelector(state => state.products.message)
-  // const error = useAppSelector(state => state.products.error)
   const productMessage = useAppSelector(state => state.products.message)
   const productError = useAppSelector(state => state.products.error)
   const categoryMessage = useAppSelector(state => state.category.message)
@@ -27,18 +24,6 @@ export const StoreProviderModalStatus = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-
-  // useEffect(() => {
-  //   if (message || error) {
-  //     setIsOpen(true)
-  //     const timer = setTimeout(() => {
-  //       setIsOpen(false)
-  //       // dispatch(clearMessage())
-  //     }, 3000)
-
-  //     return () => clearTimeout(timer)
-  //   }
-  // }, [dispatch, message, error])
 
   useEffect(() => {
     if (

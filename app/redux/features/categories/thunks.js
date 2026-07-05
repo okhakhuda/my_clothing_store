@@ -1,92 +1,58 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { createApiThunk } from '../../helpers/createApiThunk'
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_NEXT_API_URL
 
-export const fetchCategoryThunk = createAsyncThunk('category/fetchCategory', async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get(`/api/categories/`)
-
-    return data.categories
-  } catch (error) {
-    console.log(error)
-
-    return rejectWithValue(error.message)
-  }
+export const fetchCategoryThunk = createApiThunk('category/fetchCategory', async () => {
+  const { data } = await axios.get('/api/categories/')
+  return data.categories
 })
 
-export const fetchCategoryByMainSlugThunk = createAsyncThunk(
-  'category/fetchCategoryByMainSlug',
-  async (slug, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(`/api/categories/slug/${slug}`)
-      return data.result.items
-    } catch (error) {
-      console.log(error)
+export const fetchCategoryByMainSlugThunk = createApiThunk('category/fetchCategoryByMainSlug', async slug => {
+  const { data } = await axios.get(`/api/categories/slug/${slug}`)
+  return data.result.items
+})
 
-      return rejectWithValue(error.message)
-    }
-  },
-)
-
-export const addCategoryThunk = createAsyncThunk(
+export const addCategoryThunk = createApiThunk(
   'category/addCategory',
-  async (categoryData, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
+  async (categoryData, token) => {
+    const { data } = await axios.post('/api/categories', categoryData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
-    try {
-      const { data } = await axios.post('/api/categories', categoryData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const updateCategoryThunk = createAsyncThunk(
+export const updateCategoryThunk = createApiThunk(
   'category/updateCategory',
-  async ({ id, formData }, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
+  async ({ id, formData }, token) => {
+    const { data } = await axios.put(`/api/categories/update/${id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
-    try {
-      const { data } = await axios.put(`/api/categories/update/${id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const removeCategoryThunk = createAsyncThunk(
+export const removeCategoryThunk = createApiThunk(
   'category/removeCategory',
-  async (id, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
+  async (id, token) => {
+    const { data } = await axios.delete(`/api/categories/delete/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-    try {
-      const { data } = await axios.delete(`/api/categories/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )

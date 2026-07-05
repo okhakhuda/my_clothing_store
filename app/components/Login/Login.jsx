@@ -18,7 +18,7 @@ function Login() {
   const token = useAppSelector(state => state.auth.token)
 
   useEffect(() => {
-    if (token) {5
+    if (token) {
       router.push('/')
     }
   }, [router, token])

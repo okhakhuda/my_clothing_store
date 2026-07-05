@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
+import { useAppDispatch } from '@/app/redux/hooks'
 import { registerThunk } from '../../redux/features/auth/thunks'
 import { useRouter } from 'next/navigation'
 import { useFormValidation } from '../hooks/useFormValidation'
@@ -10,20 +10,18 @@ import s from './Register.module.scss'
 
 function Register() {
   const dispatch = useAppDispatch()
-  const authError = useAppSelector(state => state.auth.error)
   const router = useRouter()
 
   const [isLoading, setIsLoading] = useState(false)
   const [serverError, setServerError] = useState('')
 
-  // ✅ Використовуємо хук з параметром isRegister=true
   const { values, errors, handleChange, hasErrors, reset } = useFormValidation(true)
 
   // ✅ disabled враховує всі обов'язкові поля + помилки
   const isFormValid =
     !hasErrors &&
     values.firstname &&
-    values.lastname &&
+    // values.lastname &&
     values.phone &&
     values.email &&
     values.password &&
@@ -41,7 +39,7 @@ function Register() {
       await dispatch(
         registerThunk({
           firstName: values.firstname,
-          lastName: values.lastname,
+          // lastName: values.lastname,
           phone: values.phone,
           email: values.email,
           password: values.password,
@@ -69,7 +67,7 @@ function Register() {
           </div>
 
           <form className={s.registerForm} onSubmit={handleSubmit}>
-            <div className={s.formRow}>
+            <div className={s.formGroup}>
               <ValidatedInput
                 name="firstname"
                 label="Ім'я *"
@@ -79,41 +77,43 @@ function Register() {
                 disabled={isLoading}
                 className={s.formField}
               />
-
+            </div>
+            {/* <div className={s.formGroup}>
               <ValidatedInput
                 name="lastname"
-                label="Прізвище *"
+                label="Прізвище"
                 value={values.lastname}
                 onChange={value => handleChange('lastname', value)}
                 error={errors.lastname}
                 disabled={isLoading}
                 className={s.formField}
               />
+            </div> */}
+            <div className={s.formGroup}>
+              <ValidatedInput
+                name="phone"
+                type="tel"
+                label="Телефон *"
+                value={values.phone}
+                onChange={value => handleChange('phone', value)}
+                error={errors.phone}
+                disabled={isLoading}
+                className={s.formField}
+              />
             </div>
-
-            <ValidatedInput
-              name="phone"
-              type="tel"
-              label="Телефон *"
-              value={values.phone}
-              onChange={value => handleChange('phone', value)}
-              error={errors.phone}
-              disabled={isLoading}
-              className={s.formField}
-            />
-
-            <ValidatedInput
-              name="email"
-              type="email"
-              label="Email *"
-              value={values.email}
-              onChange={value => handleChange('email', value)}
-              error={errors.email}
-              disabled={isLoading}
-              className={s.formField}
-            />
-
-            <div className={s.formRow}>
+            <div className={s.formGroup}>
+              <ValidatedInput
+                name="email"
+                type="email"
+                label="Email *"
+                value={values.email}
+                onChange={value => handleChange('email', value)}
+                error={errors.email}
+                disabled={isLoading}
+                className={s.formField}
+              />
+            </div>
+            <div className={s.formGroup}>
               <ValidatedInput
                 name="password"
                 type="password"
@@ -124,7 +124,8 @@ function Register() {
                 disabled={isLoading}
                 className={s.formField}
               />
-
+            </div>
+            <div className={s.formGroup}>
               <ValidatedInput
                 name="confirmPassword"
                 type="password"

@@ -36,7 +36,7 @@ export const Category = () => {
     if (mainId === 'all') {
       setCategories(categoriesSelector)
     } else {
-      const filtered = categoriesSelector.filter(c => c.genderCategory === mainId)
+      const filtered = categoriesSelector.filter(c => c.genderCategory.id === mainId)
       setCategories(filtered)
     }
   }, [mainId, categoriesSelector])

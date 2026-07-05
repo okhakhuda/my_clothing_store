@@ -11,14 +11,14 @@ export const ModalStatus = () => {
   if (!isOpen) return null
 
   const isError = !!error
-  const icon = isError ? MdErrorOutline : MdCheckCircle
+  const Icon = isError ? MdErrorOutline : MdCheckCircle
 
   return (
     <div className={s.modalOverlay} onClick={handleClose}>
       <div className={s.modalContent} onClick={e => e.stopPropagation()}>
         {/* ✅ Анімована іконка */}
         <div className={`${s.iconWrapper} ${isError ? s.errorIconWrapper : s.successIconWrapper}`}>
-          <icon className={s.statusIcon} />
+          <Icon className={s.statusIcon} />
         </div>
 
         {/* ✅ Заголовок */}

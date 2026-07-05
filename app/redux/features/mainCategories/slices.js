@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createListSlice } from '../../helpers/createListSlice'
 import {
   fetchMainCategoryThunk,
   addMainCategoryThunk,
@@ -6,7 +6,7 @@ import {
   removeMainCategoryThunk,
 } from './thunks'
 
-const mainCategorySlice = createSlice({
+const mainCategorySlice = createListSlice({
   name: 'mainCategory',
   initialState: {
     items: [],
@@ -14,62 +14,38 @@ const mainCategorySlice = createSlice({
     message: null,
     isLoading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchMainCategoryThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(fetchMainCategoryThunk.fulfilled, (state, action) => {
-        state.isLoading = false
+  cases: [
+    {
+      thunk: fetchMainCategoryThunk,
+      onFulfilled: (state, action) => {
         state.items = action.payload
-      })
-      .addCase(fetchMainCategoryThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload.message
-      })
-
-      .addCase(addMainCategoryThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(addMainCategoryThunk.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.items = [...state.items, ...action.payload.result]
+      },
+    },
+    {
+      thunk: addMainCategoryThunk,
+      onFulfilled: (state, action) => {
+        const added = action.payload.result
+        state.items = Array.isArray(added) ? [...state.items, ...added] : [...state.items, added]
         state.message = action.payload.message
-      })
-      .addCase(addMainCategoryThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload.message
-      })
-
-      .addCase(updateMainCategoryThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(updateMainCategoryThunk.fulfilled, (state, action) => {
-        state.isLoading = false
+      },
+    },
+    {
+      thunk: updateMainCategoryThunk,
+      onFulfilled: (state, action) => {
         state.items = state.items.map(item =>
           item.id === action.payload.updateCategory.id ? action.payload.updateCategory : item,
         )
         state.message = action.payload.message
-      })
-      .addCase(updateMainCategoryThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload.message
-      })
-
-      .addCase(removeMainCategoryThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(removeMainCategoryThunk.fulfilled, (state, action) => {
+      },
+    },
+    {
+      thunk: removeMainCategoryThunk,
+      onFulfilled: (state, action) => {
         state.items = state.items.filter(el => el.id !== action.payload.category.id)
-        state.isLoading = false
         state.message = action.payload.message
-      })
-      .addCase(removeMainCategoryThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload.message
-      })
-  },
+      },
+    },
+  ],
 })
 
 export const mainCategoryReducer = mainCategorySlice.reducer

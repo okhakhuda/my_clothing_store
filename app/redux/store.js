@@ -10,6 +10,7 @@ import {
   productsByCatReducer,
   productsReducer,
   productByIdReducer,
+  productsNewReducer,
 } from './features/products/slices'
 import { categoryReducer, categoryByMainSlugReducer } from './features/categories/slices'
 import { orderAllReducer, orderByUserReducer } from './features/order/slices'
@@ -38,7 +39,7 @@ export const makeStore = () => {
       category: categoryReducer,
       categoryByMainSlug: categoryByMainSlugReducer,
       products: productsReducer,
-      productsNew: productsReducer,
+      productsNew: productsNewReducer,
       productsByMainCat: productsByMainCatReducer,
       productsByCat: productsByCatReducer,
       productById: productByIdReducer,

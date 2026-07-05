@@ -47,7 +47,7 @@ export const logoutThunk = createAsyncThunk('user/logout', async (_, { rejectWit
   try {
     const state = getState()
     const token = state.auth.token
-    const data = await axios.post('/api/auth/logout', {
+    const data = await axios.post('/api/auth/logout', null, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

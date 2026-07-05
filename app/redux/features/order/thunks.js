@@ -1,69 +1,40 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { createApiThunk } from '../../helpers/createApiThunk'
 
-export const fetchAllOrderThunk = createAsyncThunk(
+export const fetchAllOrderThunk = createApiThunk(
   'allOrder/fetchAllOrder',
-  async (_, { rejectWithValue, getState }) => {
-    try {
-      const state = getState()
-      const token = state.auth.token
+  async (_, token) => {
+    const { data } = await axios.get('/api/orders/', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-      const data = await axios.get(`/api/orders/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      // console.log(data.data)
-      return data.data
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
-export const fetchOrderByUserThunk = createAsyncThunk(
+
+export const fetchOrderByUserThunk = createApiThunk(
   'order/fetchOrderByUser',
-  async (userId, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
-    // console.log(token)
+  async (userId, token) => {
+    const { data } = await axios.get(`/api/orders/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-    try {
-      const data = await axios.get(`/api/orders/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      console.log(data.data)
-
-      return data.data
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const createOrderThunk = createAsyncThunk(
-  'order/createOrder',
-  async (orderData, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
+export const createOrderThunk = createApiThunk('order/createOrder', async orderData => {
+  const { data } = await axios.post('/api/orders', orderData, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 
-    try {
-      const { data } = await axios.post(`/api/orders`, orderData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      return data
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
-  },
-)
+  return data
+})

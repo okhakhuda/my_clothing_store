@@ -15,7 +15,7 @@ const Product = ({ productId }) => {
     dispatch(fetchProductByIdThunk(productId))
   }, [dispatch, productId])
 
-  const { items: product, loading } = useAppSelector(state => state.productById)
+  const { items: product, isLoading } = useAppSelector(state => state.productById)
 
   const [dataProduct, setDataProduct] = useState({})
 
@@ -48,7 +48,7 @@ const Product = ({ productId }) => {
     setSize(e.target.value)
   }
 
-  if (loading) {
+  if (isLoading) {
     return <Loader />
   }
 

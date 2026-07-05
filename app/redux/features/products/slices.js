@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createListSlice } from '../../helpers/createListSlice'
 import {
   fetchProductsThunk,
   fetchNewProductsThunk,
@@ -11,7 +11,7 @@ import {
   removeProductImageThunk,
 } from './thunks'
 
-const productsSlice = createSlice({
+const productsSlice = createListSlice({
   name: 'products',
   initialState: {
     items: [],
@@ -19,83 +19,49 @@ const productsSlice = createSlice({
     error: null,
     isLoading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchProductsThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(fetchProductsThunk.fulfilled, (state, action) => {
+  cases: [
+    {
+      thunk: fetchProductsThunk,
+      onFulfilled: (state, action) => {
         state.items = action.payload
-        state.isLoading = false
-      })
-      .addCase(fetchProductsThunk.rejected, (state, action) => {
-        state.error = action.payload.message
-        state.isLoading = false
-      })
-
-      .addCase(addProductThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(addProductThunk.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
-
+      },
+    },
+    {
+      thunk: addProductThunk,
+      onFulfilled: (state, action) => {
         state.items = [action.payload, ...state.items]
         state.message = action.payload.message
-        state.isLoading = false
-      })
-      .addCase(addProductThunk.rejected, (state, action) => {
-        state.error = action.payload.message
-        state.isLoading = false
-      })
-
-      .addCase(updateProductThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(updateProductThunk.fulfilled, (state, action) => {
+      },
+    },
+    {
+      thunk: updateProductThunk,
+      onFulfilled: (state, action) => {
         state.items = state.items.map(el =>
           el.id === action.payload.updateProduct.id ? action.payload.updateProduct : el,
         )
         state.message = action.payload.message
-        state.isLoading = false
-      })
-      .addCase(updateProductThunk.rejected, (state, action) => {
-        state.error = action.payload.message
-        state.isLoading = false
-      })
-
-      .addCase(removeProductThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(removeProductThunk.fulfilled, (state, action) => {
+      },
+    },
+    {
+      thunk: removeProductThunk,
+      onFulfilled: (state, action) => {
         state.items = state.items.filter(el => el.id !== action.payload.product.id)
         state.message = action.payload.message
-        state.isLoading = false
-      })
-      .addCase(removeProductThunk.rejected, (state, action) => {
-        state.error = action.payload.message
-        state.isLoading = false
-      })
-
-      .addCase(removeProductImageThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(removeProductImageThunk.fulfilled, (state, action) => {
+      },
+    },
+    {
+      thunk: removeProductImageThunk,
+      onFulfilled: (state, action) => {
         state.items = state.items.map(el =>
           el.id === action.payload.updateProduct.id ? action.payload.updateProduct : el,
         )
         state.message = action.payload.message
-
-        state.isLoading = false
-      })
-      .addCase(removeProductImageThunk.rejected, (state, action) => {
-        state.error = action.payload.message
-        state.isLoading = false
-      })
-  },
+      },
+    },
+  ],
 })
 
-const newProductsSlice = createSlice({
+const newProductsSlice = createListSlice({
   name: 'newProducts',
   initialState: {
     items: [],
@@ -103,93 +69,65 @@ const newProductsSlice = createSlice({
     error: null,
     isLoading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchNewProductsThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(fetchNewProductsThunk.fulfilled, (state, action) => {
+  cases: [
+    {
+      thunk: fetchNewProductsThunk,
+      onFulfilled: (state, action) => {
         state.items = action.payload
-        state.isLoading = false
-      })
-      .addCase(fetchNewProductsThunk.rejected, (state, action) => {
-        state.error = action.payload.message
-        state.isLoading = false
-      })
-  },
+      },
+    },
+  ],
 })
 
-const productsByMainCatSlice = createSlice({
+const productsByMainCatSlice = createListSlice({
   name: 'productsByMainCat',
   initialState: {
     items: [],
     error: null,
     isLoading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchProductsByMainCatThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(fetchProductsByMainCatThunk.fulfilled, (state, action) => {
-        state.isLoading = false
+  cases: [
+    {
+      thunk: fetchProductsByMainCatThunk,
+      onFulfilled: (state, action) => {
         state.items = action.payload
-      })
-      .addCase(fetchProductsByMainCatThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload
-      })
-  },
+      },
+    },
+  ],
 })
 
-const productsByCatSlice = createSlice({
+const productsByCatSlice = createListSlice({
   name: 'productsByCat',
   initialState: {
     items: [],
     error: null,
     isLoading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchProductsByCatThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(fetchProductsByCatThunk.fulfilled, (state, action) => {
-        state.isLoading = false
+  cases: [
+    {
+      thunk: fetchProductsByCatThunk,
+      onFulfilled: (state, action) => {
         state.items = action.payload
-      })
-      .addCase(fetchProductsByCatThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload
-      })
-  },
+      },
+    },
+  ],
 })
 
-const productByIdSlice = createSlice({
+const productByIdSlice = createListSlice({
   name: 'productById',
   initialState: {
     items: [],
     error: null,
     isLoading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchProductByIdThunk.pending, (state, action) => {
-        state.isLoading = true
-      })
-      .addCase(fetchProductByIdThunk.fulfilled, (state, action) => {
-        state.isLoading = false
+  cases: [
+    {
+      thunk: fetchProductByIdThunk,
+      onFulfilled: (state, action) => {
         state.items = action.payload
-      })
-      .addCase(fetchProductByIdThunk.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload
-      })
-  },
+      },
+    },
+  ],
 })
 
 export const productsReducer = productsSlice.reducer

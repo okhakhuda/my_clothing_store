@@ -1,166 +1,88 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { createApiThunk } from '../../helpers/createApiThunk'
 
-export const fetchProductsThunk = createAsyncThunk('products/fetchProducts', async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get('/api/products/allProducts')
-
-    return data.products.data
-  } catch (error) {
-    console.log(error)
-
-    return rejectWithValue(error.message)
-  }
+export const fetchProductsThunk = createApiThunk('products/fetchProducts', async () => {
+  const { data } = await axios.get('/api/products/allProducts')
+  return data.products.data
 })
 
-export const fetchNewProductsThunk = createAsyncThunk('products/fetchProducts', async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get('/api/products/newproducts')
-
-    return data.products
-  } catch (error) {
-    console.log(error)
-
-    return rejectWithValue(error.message)
-  }
+export const fetchNewProductsThunk = createApiThunk('products/fetchNewProducts', async () => {
+  const { data } = await axios.get('/api/products/newproducts')
+  return data.products
 })
 
-export const fetchProductsByMainCatThunk = createAsyncThunk(
-  'products/fetchProductsByMainCat',
-  async (slug, { rejectWithValue }) => {
-    try {
-      const { data } = await axios(`/api/products/genderCategory/${slug}`)
+export const fetchProductsByMainCatThunk = createApiThunk('products/fetchProductsByMainCat', async slug => {
+  const { data } = await axios(`/api/products/genderCategory/${slug}`)
+  return data.data.products
+})
 
-      return data.data.products
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
-  },
-)
-
-export const fetchProductsByCatThunk = createAsyncThunk(
+export const fetchProductsByCatThunk = createApiThunk(
   'products/fetchProductsByCat',
-  async ({ mainSlug, categorySlug }, { rejectWithValue }) => {
-    console.log(mainSlug, categorySlug);
-    
-    try {
-      const { data } = await axios(`/api/products/category/${mainSlug}/${categorySlug}`)
-      console.log(data.data.products);
-      
-      return data.data.products
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+  async ({ mainSlug, categorySlug }) => {
+    const { data } = await axios(`/api/products/category/${mainSlug}/${categorySlug}`)
+    return data.data.products
   },
 )
 
-export const fetchProductByIdThunk = createAsyncThunk(
-  'products/fetchProductById',
-  async (productId, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(`/api/products/${productId}`)
+export const fetchProductByIdThunk = createApiThunk('products/fetchProductById', async productId => {
+  const { data } = await axios.get(`/api/products/${productId}`)
+  return data.product
+})
 
-      return data.product
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
-  },
-)
-
-export const addProductThunk = createAsyncThunk(
+export const addProductThunk = createApiThunk(
   'products/addProduct',
-  async (formData, { rejectWithValue, getState }) => {
-    try {
-      const state = getState()
-      const token = state.auth.token
+  async (formData, token) => {
+    const { data } = await axios.post('/api/products/', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
-      const { data } = await axios.post('/api/products/', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      console.log(data)
-
-      return data.result
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+    return data.result
   },
+  { withAuth: true },
 )
 
-export const updateProductThunk = createAsyncThunk(
+export const updateProductThunk = createApiThunk(
   'products/updateProduct',
-  async (prop, { rejectWithValue, getState }) => {
-    try {
-      const state = getState()
-      const token = state.auth.token
+  async (prop, token) => {
+    const { data } = await axios.put(`/api/products/update/${prop.id}`, prop.formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
-      const { data } = await axios.put(`/api/products/update/${prop.id}`, prop.formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-
-      return data
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const removeProductThunk = createAsyncThunk(
+export const removeProductThunk = createApiThunk(
   'products/removeProduct',
-  async (productId, { rejectWithValue, getState }) => {
-    try {
-      const state = getState()
-      const token = state.auth.token
+  async (productId, token) => {
+    const { data } = await axios.delete(`/api/products/delete/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-      const { data } = await axios.delete(`/api/products/delete/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      console.log(data)
-
-      return data
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const removeProductImageThunk = createAsyncThunk(
+export const removeProductImageThunk = createApiThunk(
   'products/removeProductImage',
-  async (props, { rejectWithValue, getState }) => {
-    try {
-      const state = getState()
-      const token = state.auth.token
+  async (props, token) => {
+    const { data } = await axios.put(`/api/products/deleteImage/${props.id}?public_id=${props.idFileCloud}`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-      const { data } = await axios.put(`/api/products/deleteImage/${props.id}?public_id=${props.idFileCloud}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      return data
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )

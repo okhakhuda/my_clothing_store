@@ -41,6 +41,7 @@ const ListProducts = ({ mainSlug, categorySlug }) => {
   const isLoading = categorySlug === undefined ? productsByMainCatLoading : productsByCatLoading
 
   const hasProducts = products.length > 0
+
   const isError = categorySlug === undefined ? productsByMainCatError : productsByCatError
 
   const visibleProducts = useMemo(() => {

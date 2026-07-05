@@ -33,6 +33,7 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.isLoading = false
+        state.user = action.payload.data
         state.token = action.payload.data.token
         state.isAuth = true
       })
@@ -51,6 +52,7 @@ const authSlice = createSlice({
           state.user = { firstName: '', lastName: '', phone: '', email: '', avatarUrl: '', role: '', id: '' }
           state.token = ''
           state.isAuth = false
+          return
         }
         state.isLoading = false
         state.isAuth = true

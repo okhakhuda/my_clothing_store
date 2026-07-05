@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import { PiEyeSlashLight, PiEyeLight } from 'react-icons/pi'
 import s from './ValidatedInput.module.scss'
 
 export default function ValidatedInput({
@@ -13,8 +15,14 @@ export default function ValidatedInput({
   disabled = false,
   placeholder,
 }) {
+  const [showPassword, setShowPassword] = useState(false)
+
   const handleChange = e => {
     onChange(e.target.value)
+  }
+
+  const handleChangeShowPassword = () => {
+    setShowPassword(!showPassword)
   }
 
   const inputPlaceholder =
@@ -25,21 +33,35 @@ export default function ValidatedInput({
         : placeholder || 'Введіть значення'
 
   return (
-    <div className={`${s.formGroup} ${className}`}>
-      <label htmlFor={name} className={s.formLabel}>
-        {label}
-      </label>
-      <input
-        id={name}
-        type={type}
-        className={`${s.formInput} ${error ? s.formInputError : ''}`}
-        value={value}
-        onChange={handleChange}
-        placeholder={inputPlaceholder}
-        name={name}
-        disabled={disabled}
-      />
-      {error && <p className={s.errorMessage}>{error}</p>}
-    </div>
+    <>
+      <div className={`${s.formGroup} ${className}`}>
+        <label htmlFor={name} className={s.formLabel}>
+          {label}
+        </label>
+        <div className={s.inputWrapper}>
+          <input
+            id={name}
+            type={showPassword ? 'text' : type}
+            className={`${s.formInput} ${error ? s.formInputError : ''}`}
+            value={value}
+            onChange={handleChange}
+            placeholder={inputPlaceholder}
+            name={name}
+            disabled={disabled}
+          />
+          {type === 'password' && (
+            <button
+              className={s.iconWrapper}
+              type="button"
+              onClick={() => handleChangeShowPassword()}
+              aria-label={showPassword ? 'Сховати пароль' : 'Показати пароль'}
+            >
+              {showPassword ? <PiEyeLight className={s.icon} /> : <PiEyeSlashLight className={s.icon} />}
+            </button>
+          )}
+        </div>
+        {error && <p className={s.errorMessage}>{error}</p>}
+      </div>
+    </>
   )
 }

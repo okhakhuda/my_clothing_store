@@ -57,7 +57,7 @@ const Profile = () => {
                 ) : (
                   <div className={s.avatarPlaceholder}>
                     {user.firstName[0]}
-                    {user.lastName[0]}
+                    {user.lastName && user.lastName[0]}
                   </div>
                 )}
               </div>

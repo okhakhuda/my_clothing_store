@@ -30,7 +30,6 @@ const cartSlice = createSlice({
     },
     clearCart: state => {
       state.items = []
-
       state.message = 'Кошик успішно очищено'
     },
     incrementQuantity: (state, action) => {
@@ -51,11 +50,10 @@ const cartSlice = createSlice({
       if (item && item.quantity > 1) {
         item.quantity -= 1
       } else if (item) {
-        state.items = state.items.filter(item => item.size !== action.payload.size)
+        state.items = state.items.filter(
+          item => !(item.productId === action.payload.productId && item.size === action.payload.size),
+        )
       }
-    },
-    clearCart: state => {
-      state.items = []
     },
     clearCartMessage: state => {
       state.message = null

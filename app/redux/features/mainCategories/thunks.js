@@ -1,84 +1,53 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { createApiThunk } from '../../helpers/createApiThunk'
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_NEXT_API_URL
 
-export const fetchMainCategoryThunk = createAsyncThunk(
-  'mainCategory/fetchMainCategory',
-  async (_, { rejectWithValue }) => {
-    try {
-      axios.defaults.baseURL = process.env.NEXT_PUBLIC_NEXT_API_URL
-      const { data } = await axios.get('api/gendercategories')
+export const fetchMainCategoryThunk = createApiThunk('mainCategory/fetchMainCategory', async () => {
+  const { data } = await axios.get('api/gendercategories')
+  return data.categories
+})
 
-      return data.categories
-    } catch (error) {
-      console.log(error)
-
-      return rejectWithValue(error.message)
-    }
-  },
-)
-
-export const addMainCategoryThunk = createAsyncThunk(
+export const addMainCategoryThunk = createApiThunk(
   'mainCategory/addMainCategory',
-  async (formData, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
+  async (formData, token) => {
+    const { data } = await axios.post('/api/gendercategories/', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
-    try {
-      const { data } = await axios.post('/api/gendercategories/', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const updateMainCategoryThunk = createAsyncThunk(
+export const updateMainCategoryThunk = createApiThunk(
   'mainCategory/updateMainCategory',
-  async ({ id, formData }, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
-    console.log('token', token)
+  async ({ id, formData }, token) => {
+    const { data } = await axios.put(`/api/gendercategories/update/${id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
-    try {
-      const { data } = await axios.put(`/api/gendercategories/update/${id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      console.log(data)
-
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
 
-export const removeMainCategoryThunk = createAsyncThunk(
+export const removeMainCategoryThunk = createApiThunk(
   'mainCategory/removeMainCategory',
-  async (id, { rejectWithValue, getState }) => {
-    const state = getState()
-    const token = state.auth.token
+  async (id, token) => {
+    const { data } = await axios.delete(`/api/gendercategories/delete/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-    try {
-      const { data } = await axios.delete(`/api/gendercategories/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      console.log(data)
-
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
+    return data
   },
+  { withAuth: true },
 )
