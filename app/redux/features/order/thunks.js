@@ -3,14 +3,15 @@ import { createApiThunk } from '../../helpers/createApiThunk'
 
 export const fetchAllOrderThunk = createApiThunk(
   'allOrder/fetchAllOrder',
-  async (_, token) => {
-    const { data } = await axios.get('/api/orders/', {
+  async ({ page = 1, limit } = {}, token) => {
+    const skip = (page - 1) * limit
+    const { data } = await axios.get(`/api/orders/?limit=${limit}&skip=${skip}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
 
-    return data
+    return data.orders
   },
   { withAuth: true },
 )

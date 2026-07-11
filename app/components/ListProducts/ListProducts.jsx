@@ -3,72 +3,70 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
-import { useState, useEffect, useMemo } from 'react'
-import { fetchProductsByMainCatThunk } from '../../redux/features/products/thunks'
-import { fetchProductsByCatThunk } from '../../redux/features/products/thunks'
+import { useEffect, useState } from 'react'
+import { fetchProductsByMainCatThunk, fetchProductsByCatThunk } from '../../redux/features/products/thunks'
+import { Pagination } from '../utils/Pagination/Pagination'
 import s from './ListProducts.module.scss'
 import { MdInventory2 } from 'react-icons/md'
-
 import Loader from '../Loader/Loader'
 
 const ListProducts = ({ mainSlug, categorySlug }) => {
-  const productsByCat = useAppSelector(state => state.productsByCat.items)
-  const productsByMainCat = useAppSelector(state => state.productsByMainCat.items)
-  const productsByCatLoading = useAppSelector(state => state.productsByCat.loading)
-  const productsByMainCatLoading = useAppSelector(state => state.productsByMainCat.loading)
-  const productsByCatError = useAppSelector(state => state.productsByCat.error)
-  const productsByMainCatError = useAppSelector(state => state.productsByMainCat.error)
+  const {
+    items: productsByCat,
+    isLoading: byCatLoading,
+    error: byCatError,
+    total: byCatTotal,
+    limit: byCatLimit,
+  } = useAppSelector(state => state.productsByCat)
+  const {
+    items: productsByMainCat,
+    isLoading: byMainLoading,
+    error: byMainError,
+    total: byMainTotal,
+    limit: byMainLimit,
+  } = useAppSelector(state => state.productsByMainCat)
 
   const dispatch = useAppDispatch()
-  const [products, setProducts] = useState([])
+  const [page, setPage] = useState(1)
+
+  const isByMain = categorySlug === undefined
+  const products = isByMain ? productsByMainCat : productsByCat
+  const isLoading = isByMain ? byMainLoading : byCatLoading
+  const isError = isByMain ? byMainError : byCatError
+  const total = isByMain ? byMainTotal : byCatTotal
+  const limit = isByMain ? byMainLimit : byCatLimit
+  const totalPages = limit && total ? Math.ceil(total / limit) : 1
 
   useEffect(() => {
-    if (categorySlug === undefined) {
-      dispatch(fetchProductsByMainCatThunk(mainSlug))
-    } else {
-      dispatch(fetchProductsByCatThunk({ mainSlug, categorySlug }))
-    }
-  }, [dispatch, mainSlug, categorySlug])
+    setPage(1)
+  }, [mainSlug, categorySlug])
 
   useEffect(() => {
-    if (categorySlug === undefined) {
-      setProducts(productsByMainCat)
+    if (isByMain) {
+      dispatch(fetchProductsByMainCatThunk({ slug: mainSlug, page, limit }))
     } else {
-      setProducts(productsByCat)
+      dispatch(fetchProductsByCatThunk({ mainSlug, categorySlug, page, limit }))
     }
-  }, [productsByMainCat, productsByCat, categorySlug])
+  }, [dispatch, mainSlug, categorySlug, isByMain, page, limit])
 
-  const isLoading = categorySlug === undefined ? productsByMainCatLoading : productsByCatLoading
-
-  const hasProducts = products.length > 0
-
-  const isError = categorySlug === undefined ? productsByMainCatError : productsByCatError
-
-  const visibleProducts = useMemo(() => {
-    return products.slice(0, 24)
-  }, [products])
-
-  if (isLoading) {
-    return <Loader />
+  const retry = () => {
+    if (isByMain) {
+      dispatch(fetchProductsByMainCatThunk({ slug: mainSlug, page, limit }))
+    } else {
+      dispatch(fetchProductsByCatThunk({ mainSlug, categorySlug, page, limit }))
+    }
   }
+
+  if (isLoading) return <Loader />
 
   if (isError) {
     return (
-      <section className={s.errorSection} aria-label="Помилка завантаження товарів">
+      <section className={s.errorSection}>
         <div className={s.errorContainer}>
           <MdInventory2 className={s.errorIcon} />
           <h2 className={s.errorTitle}>Помилка завантаження</h2>
           <p className={s.errorText}>Не вдалося завантажити товари</p>
-          <button
-            className={s.retryButton}
-            onClick={() => {
-              if (categorySlug === undefined) {
-                dispatch(fetchProductsByMainCatThunk(mainSlug))
-              } else {
-                dispatch(fetchProductsByCatThunk({ mainSlug, categorySlug }))
-              }
-            }}
-          >
+          <button className={s.retryButton} onClick={retry}>
             Спробувати ще раз
           </button>
         </div>
@@ -76,11 +74,11 @@ const ListProducts = ({ mainSlug, categorySlug }) => {
     )
   }
 
-  if (!isLoading && !hasProducts) {
+  if (!products.length) {
     return (
       <div className={s.emptyState}>
         <MdInventory2 className={s.emptyIcon} />
-        <h3 className={s.emptyTitle}>Покищо товарів немає!</h3>
+        <h3 className={s.emptyTitle}>Поки що товарів немає!</h3>
         <p className={s.emptyText}>Додамо найближчим часом</p>
       </div>
     )
@@ -89,44 +87,45 @@ const ListProducts = ({ mainSlug, categorySlug }) => {
   return (
     <section className={s.productsSection} aria-label="Список товарів">
       <div className={s.productsGrid}>
-        {hasProducts &&
-          visibleProducts.map((product, index) => (
-            <article key={product.id} className={s.productCard}>
-              <Link
-                href={`/${product.genderCategory.slug}/${product.category.slug}/${product.id}`}
-                className={s.productLink}
-                rel="preload"
-                aria-label={`Переглянути ${product.name}`}
-              >
-                <div className={s.productImageWrapper}>
-                  <Image
-                    className={s.productImage}
-                    src={product.image[0].url}
-                    alt={product.name}
-                    width={400}
-                    height={500}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    priority={index < 4}
-                  />
-                  <div className={s.imageOverlay}></div>
+        {products.map((product, index) => (
+          <article key={product.id} className={s.productCard}>
+            <Link
+              href={`/${product.genderCategory.slug}/${product.category.slug}/${product.id}`}
+              className={s.productLink}
+              aria-label={`Переглянути ${product.name}`}
+            >
+              <div className={s.productImageWrapper}>
+                <Image
+                  className={s.productImage}
+                  src={product.image[0].url}
+                  alt={product.name}
+                  width={400}
+                  height={500}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={index < 4}
+                />
+                <div className={s.imageOverlay} />
+              </div>
+              <div className={s.productInfo}>
+                <h3 className={s.productName}>{product.name}</h3>
+                <div className={s.productPriceWrapper}>
+                  <span className={s.productPrice}>{product.price} ₴</span>
                 </div>
-
-                <div className={s.productInfo}>
-                  <h3 className={s.productName}>{product.name}</h3>
-                  <div className={s.productPriceWrapper}>
-                    <span className={s.productPrice}>{product.price} ₴</span>
-                  </div>
-                </div>
-              </Link>
-            </article>
-          ))}
+              </div>
+            </Link>
+          </article>
+        ))}
       </div>
 
-      {hasProducts && products.length > 24 && (
-        <div className={s.loadMoreWrapper}>
-          <button className={s.loadMoreButton}>Завантажити ще</button>
-        </div>
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        goToPage={setPage}
+        goNext={() => setPage(p => p + 1)}
+        goPrev={() => setPage(p => p - 1)}
+        hasNext={page < totalPages}
+        hasPrev={page > 1}
+      />
     </section>
   )
 }

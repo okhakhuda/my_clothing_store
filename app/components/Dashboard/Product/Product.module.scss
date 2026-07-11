@@ -35,6 +35,15 @@
   font-size: 13px;
 }
 
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 15px 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
 .addButton {
   display: flex;
   align-items: center;

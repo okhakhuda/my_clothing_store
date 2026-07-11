@@ -4,7 +4,7 @@ import { registerThunk, loginThunk, currentThunk, logoutThunk } from './thunks'
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: { firstName: '', lastName: '', phone: '', email: '', avatarUrl: '', role: '', id: '' },
+    user: { firstName: '', lastName: '', phone: '', email: '', avatarUrl: '', role: '', token: '', id: '' },
     token: '',
     error: null,
     isLoading: false,
@@ -19,8 +19,8 @@ const authSlice = createSlice({
       })
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.isLoading = false
-        state.user = action.payload.data
-        state.token = action.payload.data.token
+        state.user = action.payload.user
+        state.token = action.payload.token
         state.isAuth = true
       })
       .addCase(registerThunk.rejected, (state, action) => {
@@ -33,8 +33,8 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.isLoading = false
-        state.user = action.payload.data
-        state.token = action.payload.data.token
+        state.user = action.payload.user
+        state.token = action.payload.token
         state.isAuth = true
       })
       .addCase(loginThunk.rejected, (state, action) => {

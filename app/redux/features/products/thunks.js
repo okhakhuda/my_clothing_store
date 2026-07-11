@@ -1,26 +1,33 @@
 import axios from 'axios'
 import { createApiThunk } from '../../helpers/createApiThunk'
 
-export const fetchProductsThunk = createApiThunk('products/fetchProducts', async () => {
-  const { data } = await axios.get('/api/products/allProducts')
-  return data.products.data
-})
-
 export const fetchNewProductsThunk = createApiThunk('products/fetchNewProducts', async () => {
   const { data } = await axios.get('/api/products/newproducts')
   return data.products
 })
 
-export const fetchProductsByMainCatThunk = createApiThunk('products/fetchProductsByMainCat', async slug => {
-  const { data } = await axios(`/api/products/genderCategory/${slug}`)
-  return data.data.products
+export const fetchProductsThunk = createApiThunk('products/fetchProducts', async ({ page = 1, limit } = {}) => {
+  const skip = (page - 1) * limit
+  const { data } = await axios.get(`/api/products/allProducts?&limit=${limit}&skip=${skip}`)
+
+  return data.products
 })
+
+export const fetchProductsByMainCatThunk = createApiThunk(
+  'products/fetchProductsByMainCat',
+  async ({ slug, page = 1, limit }) => {
+    const skip = (page - 1) * limit
+    const { data } = await axios(`/api/products/genderCategory/${slug}?skip=${skip}&limit=${limit}`)
+    return data.data
+  },
+)
 
 export const fetchProductsByCatThunk = createApiThunk(
   'products/fetchProductsByCat',
-  async ({ mainSlug, categorySlug }) => {
-    const { data } = await axios(`/api/products/category/${mainSlug}/${categorySlug}`)
-    return data.data.products
+  async ({ mainSlug, categorySlug, page = 1, limit }) => {
+    const skip = (page - 1) * limit
+    const { data } = await axios(`/api/products/category/${mainSlug}/${categorySlug}?skip=${skip}&limit=${limit}`)
+    return data.data
   },
 )
 

@@ -16,17 +16,20 @@ function Login() {
   const router = useRouter()
 
   const token = useAppSelector(state => state.auth.token)
+  console.log('token', token)
+  const user = useAppSelector(state => state.auth.user)
+  console.log('user', user)
 
   useEffect(() => {
-    if (token) {
+    if (token && user?.role === 'administrator') {
+      router.push('/dashboard/orders')
+    } else if (token && user?.role === 'user') {
       router.push('/')
     }
-  }, [router, token])
+  }, [router, token, user?.role])
 
-  // ✅ Використовуємо хук з параметром isRegister=true
   const { values, errors, handleChange, hasErrors, reset } = useFormValidation(true)
 
-  // ✅ disabled враховує всі обов'язкові поля + помилки
   const isFormValid =
     !hasErrors &&
     // values.phone &&
@@ -42,13 +45,11 @@ function Login() {
     setIsLoading(true)
     try {
       await dispatch(loginThunk({ email: values.email, password: values.password })).unwrap()
-      router.push('/')
       reset()
     } catch (error) {
       setServerError(error.message || 'Некоректні дані')
-      // Серверна помилка (наприклад, неправильний email або пароль)
-      handleChange('email', values.email) // Перевалідувати для показу помилки
-      handleChange('password', values.password) // Перевалідувати для показу помилки
+      handleChange('email', values.email)
+      handleChange('password', values.password)
     } finally {
       setIsLoading(false)
     }

@@ -1,25 +1,25 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { CiMenuFries } from 'react-icons/ci'
 import { AiOutlineClose } from 'react-icons/ai'
 import { FaUser, FaShoppingCart, FaHeart, FaBox, FaPhone, FaEnvelope, FaQuestionCircle } from 'react-icons/fa'
-import s from './Sidebar.module.scss'
 import Link from 'next/link'
 import Logo from '../Logo/Logo'
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks'
 import { fetchMainCategoryThunk } from '@/app/redux/features/mainCategories/thunks'
 import { logoutThunk } from '@/app/redux/features/auth/thunks'
+import s from './Sidebar.module.scss'
 
 const Sidebar = () => {
   const [toggle, setToggle] = useState(false)
   const mainCategories = useAppSelector(state => state.mainCategory.items)
   const isAuth = useAppSelector(state => state.auth.isAuth)
-  // console.log(isAuth)
   const isAuthAdmin = useAppSelector(state => state.auth.user?.role)
-  // console.log(isAuthAdmin)
 
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   useEffect(() => {
     if (mainCategories && mainCategories.length > 0) return
@@ -31,7 +31,9 @@ const Sidebar = () => {
   }
 
   const handleClick = () => {
-    dispatch(logoutThunk())
+    dispatch(logoutThunk()).then(() => {
+      router.push('/')
+    })
     setToggle(false)
   }
 

@@ -15,6 +15,8 @@ const productsSlice = createListSlice({
   name: 'products',
   initialState: {
     items: [],
+    limit: 2,
+    total: 0,
     message: null,
     error: null,
     isLoading: false,
@@ -23,7 +25,10 @@ const productsSlice = createListSlice({
     {
       thunk: fetchProductsThunk,
       onFulfilled: (state, action) => {
-        state.items = action.payload
+        state.items = action.payload.data
+        state.message = action.payload.message
+        state.total = action.payload.total
+        state.limit = action.payload.limit
       },
     },
     {
@@ -31,6 +36,7 @@ const productsSlice = createListSlice({
       onFulfilled: (state, action) => {
         state.items = [action.payload, ...state.items]
         state.message = action.payload.message
+        state.error = action.payload.error
       },
     },
     {
@@ -83,14 +89,20 @@ const productsByMainCatSlice = createListSlice({
   name: 'productsByMainCat',
   initialState: {
     items: [],
+    limit: 2,
+    total: 0,
     error: null,
+    message: null,
     isLoading: false,
   },
   cases: [
     {
       thunk: fetchProductsByMainCatThunk,
       onFulfilled: (state, action) => {
-        state.items = action.payload
+        state.items = action.payload.products
+        state.limit = action.payload.limit
+        state.total = action.payload.total
+        state.message = action.payload.message
       },
     },
   ],
@@ -100,6 +112,8 @@ const productsByCatSlice = createListSlice({
   name: 'productsByCat',
   initialState: {
     items: [],
+    limit: 2,
+    total: 0,
     error: null,
     isLoading: false,
   },
@@ -107,7 +121,10 @@ const productsByCatSlice = createListSlice({
     {
       thunk: fetchProductsByCatThunk,
       onFulfilled: (state, action) => {
-        state.items = action.payload
+        state.items = action.payload.products
+        state.limit = action.payload.limit
+        state.total = action.payload.total
+        state.message = action.payload.message
       },
     },
   ],

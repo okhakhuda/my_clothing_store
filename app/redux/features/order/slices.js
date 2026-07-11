@@ -6,6 +6,8 @@ const orderAllSlice = createListSlice({
   initialState: {
     items: [],
     isLoading: false,
+    limit: 20,
+    total: 0,
     error: null,
     message: null,
   },
@@ -13,7 +15,9 @@ const orderAllSlice = createListSlice({
     {
       thunk: fetchAllOrderThunk,
       onFulfilled: (state, action) => {
-        state.items = action.payload.orders
+        state.items = action.payload.data
+        state.total = action.payload.total
+        state.limit = action.payload.limit
       },
     },
     {

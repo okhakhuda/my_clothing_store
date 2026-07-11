@@ -24,7 +24,22 @@ const Profile = () => {
     dispatch(fetchOrderByUserThunk(user.id))
   }, [dispatch, isAuth, router, user])
 
+  const isVerifyEmailUser = () => {
+    dispatch(fetchIsVerifyEmailUserThunk(user.id))
+  }
+
   if (!isAuth || !user) return null
+
+  if (!user.verify) {
+    return (
+      <div>
+        <p>Вам потрібно веріфікуватися</p>
+        <button type="button" onClick={() => isVerifyEmailUser()}>
+          Верифікація
+        </button>
+      </div>
+    )
+  }
 
   return (
     <section className={s.profile}>

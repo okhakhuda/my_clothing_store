@@ -11,6 +11,7 @@ import s from './layout.module.scss'
 
 export default function DashboardLayout({ children }) {
   const dispatch = useAppDispatch()
+  const isAuth = useAppSelector(state => state.auth.isAuth)
   const token = useAppSelector(state => state.auth.token)
 
   const pathname = usePathname()
@@ -19,24 +20,14 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     if (token) {
-      dispatch(currentThunk(token)).then(data => {
-        if (data.payload?.data?.role !== 'administrator') {
+      dispatch(currentThunk(token)).then(res => {
+        if (res.payload.status !== 'success' && !isAuth && role !== 'administrator') {
           router.push('/login')
         }
       })
     }
-  }, [dispatch, role, router, token])
+  }, [dispatch, token, isAuth, role, router])
 
-  // Перевіряємо, чи є користувач адміном
-  // useEffect(() => {
-  //   if (role !== 'administrator') {
-  //     router.push('/login')
-  //   }
-  // }, [role, router])
-
-  // if (role !== 'administrator') return null
-
-  // Визначення активного лінку
   const isActive = path => {
     return pathname === path ? s.active : ''
   }
