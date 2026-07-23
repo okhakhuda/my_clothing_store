@@ -16,9 +16,7 @@ function Login() {
   const router = useRouter()
 
   const token = useAppSelector(state => state.auth.token)
-  console.log('token', token)
   const user = useAppSelector(state => state.auth.user)
-  console.log('user', user)
 
   useEffect(() => {
     if (token && user?.role === 'administrator') {

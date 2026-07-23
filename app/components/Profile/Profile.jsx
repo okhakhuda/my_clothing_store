@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
 import { fetchOrderByUserThunk } from '@/app/redux/features/order/thunks'
+import { repeatIsSendEmailThunk } from '@/app/redux/features/auth/thunks'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import s from './Profile.module.scss'
@@ -17,6 +18,8 @@ const Profile = () => {
   const dispatch = useAppDispatch()
   const router = useRouter()
 
+  const [sendEmail, setSendEmail] = useState(false)
+
   useEffect(() => {
     if (!isAuth || !user?.id) {
       return router.push('/login')
@@ -25,7 +28,11 @@ const Profile = () => {
   }, [dispatch, isAuth, router, user])
 
   const isVerifyEmailUser = () => {
-    dispatch(fetchIsVerifyEmailUserThunk(user.id))
+    dispatch(repeatIsSendEmailThunk(user.email)).then(action => {
+      if (action.payload.status === 'success') {
+        setSendEmail(!sendEmail)
+      }
+    })
   }
 
   if (!isAuth || !user) return null
@@ -33,9 +40,10 @@ const Profile = () => {
   if (!user.verify) {
     return (
       <div>
-        <p>Вам потрібно веріфікуватися</p>
-        <button type="button" onClick={() => isVerifyEmailUser()}>
-          Верифікація
+        <p>Щоб верифікувати свій акаунт перейдіть до електронної пошти і підтвердіть свій email</p>
+
+        <button className={s.btnRepeat} type="button" onClick={isVerifyEmailUser}>
+          Відправити ще!
         </button>
       </div>
     )

@@ -18,16 +18,6 @@ const NewProducts = () => {
     }
   }, [dispatch, newProducts])
 
-  // Expected server HTML to contain a matching <div> in <div>. Error Component Stack
-
-  // const [mounted, setMounted] = useState(false)
-
-  // useEffect(() => {
-  //   setMounted(true)
-  // }, [])
-
-  // if (!mounted) return null
-
   return (
     <section className={s.section}>
       {newProducts && (

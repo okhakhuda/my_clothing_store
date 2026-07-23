@@ -47,7 +47,7 @@ export const makeStore = () => {
       allOrder: orderAllReducer,
       orderByUser: orderByUserReducer,
     },
-    // preloadedState,
+
     devTools: process.env.NODE_ENV !== 'production',
 
     middleware: getDefaultMiddleware =>
@@ -57,11 +57,4 @@ export const makeStore = () => {
         },
       }),
   })
-  // const persistor = persistStore(store)
-  // return { persistor }
 }
-
-// const store = makeStore().store
-// export { store }
-
-// export const persistor = persistStore(makeStore())

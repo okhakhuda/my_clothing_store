@@ -6,7 +6,7 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_NEXT_API_URL
 export const registerThunk = createAsyncThunk('user/register', async (user, { rejectWithValue }) => {
   try {
     const data = await axios.post('/api/auth/signup', user)
-    // console.log(data)
+    // console.log(data.data)
 
     return data.data
   } catch (error) {
@@ -17,6 +17,21 @@ export const registerThunk = createAsyncThunk('user/register', async (user, { re
 export const loginThunk = createAsyncThunk('user/login', async (user, { rejectWithValue }) => {
   try {
     const data = await axios.post('/api/auth/login', user)
+    return data.data
+  } catch (error) {
+    return rejectWithValue({ error: error.response.data.message })
+  }
+})
+
+export const repeatIsSendEmailThunk = createAsyncThunk('user/repeatVerifyEmail', async (email, { rejectWithValue }) => {
+  try {
+    const data = await axios.post('/api/users/verify', {
+      email,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
     return data.data
   } catch (error) {
     return rejectWithValue({ error: error.response.data.message })
